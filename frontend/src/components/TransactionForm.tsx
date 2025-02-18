@@ -24,7 +24,7 @@ const TransactionForm = () => {
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            amount: 0,
+            amount: 1,
             description: '',
             category: '',
             date: new Date(),
@@ -97,11 +97,7 @@ const TransactionForm = () => {
                                                 !field.value && "text-muted-foreground"
                                             )}
                                         >
-                                            {field.value ? (
-                                                format(field.value, "PPP")
-                                            ) : (
-                                                <span>Pick a date</span>
-                                            )}
+                                            {format(field.value, "PPP")}
                                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                         </Button>
                                     </FormControl>

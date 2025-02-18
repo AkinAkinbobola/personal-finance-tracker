@@ -1,8 +1,12 @@
-import TransactionForm from "@/components/TransactionForm.tsx";
+import {NavLink} from "react-router";
 
 function App() {
   return (
-      <TransactionForm/>
+      <div>
+        Home Page
+
+        <NavLink to={"/transactions"}>Transactions</NavLink>
+      </div>
   )
 }
 
