@@ -2,8 +2,12 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {axiosInstance} from "@/axiosInstance.ts";
 import {Transaction} from "@/types/Transaction.ts";
 import {Button} from "@/components/ui/button.tsx";
+import {Dialog, DialogContent, DialogHeader,} from "@/components/ui/dialog"
+import {useState} from "react";
+import TransactionForm from "@/components/TransactionForm.tsx";
 
 const TransactionPage = () => {
+    const [openDialog, setOpenDialog] = useState(false)
     const queryClient = useQueryClient()
 
     const transactions = useQuery({
@@ -40,7 +44,15 @@ const TransactionPage = () => {
                 </ul>
             )}
 
-            <Button>Add transaction</Button>
+            <Button onClick={() => setOpenDialog(true)}>Add transaction</Button>
+
+            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <TransactionForm closeDialog={() => setOpenDialog(false)}/>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

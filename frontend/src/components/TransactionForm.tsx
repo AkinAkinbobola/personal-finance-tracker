@@ -9,6 +9,8 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.t
 import {format} from "date-fns"
 import {CalendarIcon} from "lucide-react"
 import {cn} from "@/lib/utils.ts";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {axiosInstance} from "@/axiosInstance.ts";
 
 const formSchema = z.object({
     amount: z.coerce.number().positive({message: 'Amount must be positive'}),
@@ -20,7 +22,22 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-const TransactionForm = () => {
+interface TransactionFormProps {
+    closeDialog: () => void
+}
+
+const TransactionForm = ({closeDialog}: TransactionFormProps) => {
+    const queryClient = useQueryClient()
+
+    const addTransactionMutation = useMutation({
+        mutationFn: async (values: FormValues) => {
+            await axiosInstance.post('/transactions', values)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ["transactions"]})
+        }
+    })
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -33,7 +50,8 @@ const TransactionForm = () => {
     })
 
     const onSubmit = (values: FormValues) => {
-        console.log(values)
+        addTransactionMutation.mutate(values)
+        closeDialog()
     }
 
     return (
@@ -98,7 +116,7 @@ const TransactionForm = () => {
                                             )}
                                         >
                                             {format(field.value, "PPP")}
-                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
                                         </Button>
                                     </FormControl>
                                 </PopoverTrigger>
