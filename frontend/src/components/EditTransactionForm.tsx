@@ -1,37 +1,39 @@
-import {z} from 'zod';
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
-import {Input} from "@/components/ui/input.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {Calendar} from "@/components/ui/calendar.tsx";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
-import {format} from "date-fns"
-import {CalendarIcon} from "lucide-react"
-import {cn} from "@/lib/utils.ts";
+import {Transaction} from "@/types/Transaction.ts";
+import {z} from "zod";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {axiosInstance} from "@/axiosInstance.ts";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {cn} from "@/lib/utils.ts";
+import {format} from "date-fns";
+import {CalendarIcon} from "lucide-react";
+import {Calendar} from "@/components/ui/calendar.tsx";
+
+interface EditTransactionFormProps {
+    closeDialog: () => void
+    transaction: Transaction
+}
 
 const formSchema = z.object({
     amount: z.coerce.number().positive({message: 'Amount must be positive'}),
     description: z.string(),
     category: z.string().min(1, {message: 'Category is required'}),
     date: z.date(),
-    type: z.enum(['INCOME', 'EXPENSE']),
+    type: z.string().min(1, {message: 'Type is required'}),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-interface TransactionFormProps {
-    closeDialog: () => void
-}
-
-const TransactionForm = ({closeDialog}: TransactionFormProps) => {
+const EditTransactionForm = ({transaction, closeDialog}: EditTransactionFormProps) => {
     const queryClient = useQueryClient()
 
-    const addTransactionMutation = useMutation({
+    const editTransactionMutation = useMutation({
         mutationFn: async (values: FormValues) => {
-            await axiosInstance.post('/transactions', values)
+            await axiosInstance.put(`/transactions/${transaction.id}`, values)
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["transactions"]})
@@ -41,16 +43,16 @@ const TransactionForm = ({closeDialog}: TransactionFormProps) => {
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            amount: 1,
-            description: '',
-            category: '',
-            date: new Date(),
-            type: 'EXPENSE',
+            amount: transaction.amount,
+            description: transaction.description,
+            category: transaction.category,
+            date: new Date(transaction.date),
+            type: transaction.type,
         }
     })
 
     const onSubmit = (values: FormValues) => {
-        addTransactionMutation.mutate(values)
+        editTransactionMutation.mutate(values)
         closeDialog()
     }
 
@@ -153,8 +155,7 @@ const TransactionForm = ({closeDialog}: TransactionFormProps) => {
 
                 <Button type={"submit"}>Submit</Button>
             </form>
-        </Form>
-    );
+        </Form>);
 };
 
-export default TransactionForm;
+export default EditTransactionForm;

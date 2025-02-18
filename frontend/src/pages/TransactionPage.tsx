@@ -4,10 +4,14 @@ import {Transaction} from "@/types/Transaction.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Dialog, DialogContent, DialogHeader,} from "@/components/ui/dialog"
 import {useState} from "react";
-import TransactionForm from "@/components/TransactionForm.tsx";
+import CreateTransactionForm from "@/components/CreateTransactionForm.tsx";
+import EditTransactionForm from "@/components/EditTransactionForm.tsx";
 
 const TransactionPage = () => {
-    const [openDialog, setOpenDialog] = useState(false)
+    const [openAddTransactionDialog, setOpenAddTransactionDialog] = useState(false)
+    const [openEditTransactionDialog, setOpenEditTransactionDialog] = useState(false)
+    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+
     const queryClient = useQueryClient()
 
     const transactions = useQuery({
@@ -39,17 +43,33 @@ const TransactionPage = () => {
                         <li key={transaction.id}>
                             {transaction.description} - {transaction.amount}
                             <Button onClick={() => deleteTransactionMutation.mutate(transaction.id)}>Delete</Button>
+                            <Button onClick={() => {
+                                setSelectedTransaction(transaction)
+                                setOpenEditTransactionDialog(true)
+                            }}>Edit</Button>
                         </li>
                     ))}
                 </ul>
             )}
 
-            <Button onClick={() => setOpenDialog(true)}>Add transaction</Button>
+            <Button onClick={() => setOpenAddTransactionDialog(true)}>Add transaction</Button>
 
-            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <Dialog open={openAddTransactionDialog} onOpenChange={setOpenAddTransactionDialog}>
                 <DialogContent>
                     <DialogHeader>
-                        <TransactionForm closeDialog={() => setOpenDialog(false)}/>
+                        <CreateTransactionForm closeDialog={() => setOpenAddTransactionDialog(false)}/>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={openEditTransactionDialog} onOpenChange={setOpenEditTransactionDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        {
+                            selectedTransaction === null ? null :
+                                <EditTransactionForm closeDialog={() => setOpenEditTransactionDialog(false)}
+                                                     transaction={selectedTransaction}/>
+                        }
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
