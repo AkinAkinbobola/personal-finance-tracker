@@ -66,9 +66,9 @@ const TransactionPage = () => {
                 <DialogContent>
                     <DialogHeader>
                         {
-                            selectedTransaction === null ? null :
-                                <EditTransactionForm closeDialog={() => setOpenEditTransactionDialog(false)}
-                                                     transaction={selectedTransaction}/>
+                            selectedTransaction &&
+                            <EditTransactionForm closeDialog={() => setOpenEditTransactionDialog(false)}
+                                                 transaction={selectedTransaction}/>
                         }
                     </DialogHeader>
                 </DialogContent>
