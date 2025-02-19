@@ -5,6 +5,7 @@ import {BrowserRouter, Route, Routes} from "react-router";
 import Layout from "@/components/Layout.tsx";
 import TransactionPage from "@/pages/TransactionPage.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient()
 
@@ -19,6 +20,8 @@ createRoot(document.getElementById('root')!).render(
                     </Route>
                 </Routes>
             </BrowserRouter>
+
+            <ReactQueryDevtools initialIsOpen={false}/>
         </QueryClientProvider>
     </StrictMode>
 )
