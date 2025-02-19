@@ -4,7 +4,7 @@ import {Link} from "react-router";
 const LandingPage = () => {
     return (
         <>
-            <div className={"md:w-9/10 mx-auto w-full flex-1 flex md:items-center md:justify-center"}>
+            <div className={"md:w-9/10 mx-auto w-full flex md:items-center md:justify-center"}>
                 <div
                     className={"flex py-6 md:py-10 items-center justify-center w-full gap-y-6 flex-col-reverse md:flex-row"}>
                     <div className={"flex flex-col gap-y-6 md:w-2/5 text-center md:text-left"}>

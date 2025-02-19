@@ -25,15 +25,15 @@ const Navbar = () => {
 
             <nav className={"flex items-center justify-between gap-x-10"}>
                 <div className={"items-center justify-between gap-x-10 hidden md:flex text-blue-700 font-medium "}>
-                    <NavLink to={"/"} className={"link-hover"}>
-                        Product
+                    <NavLink to={"/"} className={({isActive}) => `link-hover ${isActive ? "text-primary" : ""}`}>
+                        Home
                     </NavLink>
 
-                    <NavLink to={"/"} className={"link-hover"}>
+                    <NavLink to={"/services"} className={({isActive}) => `link-hover ${isActive ? "text-primary" : ""}`}>
                         Services
                     </NavLink>
 
-                    <NavLink to={"/"} className={"link-hover"}>
+                    <NavLink to={"/about"} className={({isActive}) => `link-hover ${isActive ? "text-primary" : ""}`}>
                         About
                     </NavLink>
                 </div>
