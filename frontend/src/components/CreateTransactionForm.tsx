@@ -10,7 +10,7 @@ import {format} from "date-fns"
 import {CalendarIcon} from "lucide-react"
 import {cn} from "@/lib/utils.ts";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {axiosInstance} from "@/axiosInstance.ts";
+import {axiosInstance} from "@/axios/axiosInstance.ts";
 
 const formSchema = z.object({
     amount: z.coerce.number().positive({message: 'Amount must be positive'}),

@@ -1,7 +1,7 @@
 import {Transaction} from "@/types/Transaction.ts";
 import {z} from "zod";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {axiosInstance} from "@/axiosInstance.ts";
+import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";

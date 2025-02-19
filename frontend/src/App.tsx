@@ -1,12 +1,10 @@
-import {NavLink} from "react-router";
+import LandingPage from "@/pages/LandingPage.tsx";
 
 function App() {
   return (
-      <div>
-        Home Page
-          <img src="/logo.png" alt="Logo" className={"bg-contain"}/>
-        <NavLink to={"/transactions"}>Transactions</NavLink>
-      </div>
+      <>
+        <LandingPage/>
+      </>
   )
 }
 

@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {axiosInstance} from "@/axiosInstance.ts";
+import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {Transaction} from "@/types/Transaction.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Dialog, DialogContent, DialogHeader,} from "@/components/ui/dialog"

@@ -16,8 +16,8 @@ createRoot(document.getElementById('root')!).render(
                 <Routes>
                     <Route element={<Layout/>}>
                         <Route path="/" element={<App/>}/>
-                        <Route path="/transactions" element={<TransactionPage/>}/>
                     </Route>
+                    <Route path="/transactions" element={<TransactionPage/>}/>
                 </Routes>
             </BrowserRouter>
 
