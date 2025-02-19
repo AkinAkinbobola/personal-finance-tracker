@@ -40,7 +40,7 @@ const Navbar = () => {
                     </NavLink>
                 </div>
 
-                <Button className={"rounded-full px-10 py-2"} asChild>
+                <Button className={"rounded-full px-10 py-2 font-bold"} asChild>
                     <Link to={"/transactions"}>
                         Login
                     </Link>
