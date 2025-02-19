@@ -99,3 +99,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .link-hover {
+    @apply hover:text-blue-700/60;
+  }
+}

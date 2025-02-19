@@ -4,8 +4,6 @@ import {Sheet, SheetContent, SheetHeader, SheetTrigger,} from "@/components/ui/s
 import {Menu} from "lucide-react";
 
 const Navbar = () => {
-    const hover = "hover:text-blue-700/60";
-
     return (
         <header className={"flex items-center justify-between"}>
             <img src="/logo.png" alt="Logo" className={"w-[162px] h-[42px] hidden md:block"}/>
@@ -27,15 +25,15 @@ const Navbar = () => {
 
             <nav className={"flex items-center justify-between gap-x-10"}>
                 <div className={"items-center justify-between gap-x-10 hidden md:flex text-blue-700 font-medium "}>
-                    <NavLink to={"/"} className={hover}>
+                    <NavLink to={"/"} className={"link-hover"}>
                         Product
                     </NavLink>
 
-                    <NavLink to={"/"} className={hover}>
+                    <NavLink to={"/"} className={"link-hover"}>
                         Services
                     </NavLink>
 
-                    <NavLink to={"/"} className={hover}>
+                    <NavLink to={"/"} className={"link-hover"}>
                         About
                     </NavLink>
                 </div>
