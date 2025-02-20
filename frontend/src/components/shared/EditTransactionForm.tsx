@@ -4,14 +4,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {cn} from "@/lib/utils.ts";
-import {format} from "date-fns";
-import {CalendarIcon} from "lucide-react";
-import {Calendar} from "@/components/ui/calendar.tsx";
+import TransactionForm from "@/components/shared/TransactionForm.tsx";
 
 interface EditTransactionFormProps {
     closeDialog: () => void
@@ -57,105 +50,8 @@ const EditTransactionForm = ({transaction, closeDialog}: EditTransactionFormProp
     }
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-8"}>
-                <FormField
-                    control={form.control}
-                    name={"amount"}
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>Amount</FormLabel>
-                            <FormControl>
-                                <Input placeholder={"Amount"} {...field} />
-                            </FormControl>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name={"description"}
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                                <Input placeholder={"Description"} {...field} />
-                            </FormControl>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name={"category"}
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>Category</FormLabel>
-                            <FormControl>
-                                <Input placeholder={"Category"} {...field} />
-                            </FormControl>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name={"date"}
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>Date</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <FormControl>
-                                        <Button
-                                            variant={"outline"}
-                                            className={cn(
-                                                "w-[240px] pl-3 text-left font-normal",
-                                                !field.value && "text-muted-foreground"
-                                            )}
-                                        >
-                                            {format(field.value, "PPP")}
-                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
-                                        </Button>
-                                    </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={field.value}
-                                        onSelect={field.onChange}
-                                        disabled={(date) =>
-                                            date > new Date() || date < new Date("1900-01-01")
-                                        }
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name={"type"}
-                    render={({field}) => (
-                        <FormItem>
-                            <FormLabel>Type</FormLabel>
-                            <FormControl>
-                                <Input placeholder={"Type"} {...field} />
-                            </FormControl>
-                            <FormMessage/>
-                        </FormItem>
-                    )}
-                />
-
-                <Button type={"submit"}>Submit</Button>
-            </form>
-        </Form>);
+        <TransactionForm form={form} onSubmit={onSubmit}/>
+    );
 };
 
 export default EditTransactionForm;

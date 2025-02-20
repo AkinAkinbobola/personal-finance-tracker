@@ -18,7 +18,6 @@ public class TransactionDto implements Serializable {
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be a valid number")
     BigDecimal amount;
-    @NotBlank(message = "Description is required")
     String description;
     @NotBlank(message = "Category is required")
     String category;

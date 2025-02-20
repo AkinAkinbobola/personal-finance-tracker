@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {Transaction} from "@/types/Transaction.ts";
-import {Dialog, DialogContent, DialogHeader,} from "@/components/ui/dialog"
+import {Dialog, DialogContent,} from "@/components/ui/dialog"
 import {useState} from "react";
 import CreateTransactionForm from "@/components/shared/CreateTransactionForm.tsx";
 import {CirclePlus, Loader2} from "lucide-react";
@@ -40,16 +40,15 @@ const TransactionPage = () => {
                 </ul>
             )}
 
-            <Button className={"fixed bottom-0 right-0 mx-2 my-2 md:my-6 sm:mx-6 lg:mx-8 size-14 rounded-full cursor-pointer"}
-                    onClick={() => setOpenAddTransactionDialog(true)}>
-                <CirclePlus />
+            <Button
+                className={"fixed bottom-0 right-0 mx-2 my-2 md:my-6 sm:mx-6 lg:mx-8 size-14 rounded-full cursor-pointer"}
+                onClick={() => setOpenAddTransactionDialog(true)}>
+                <CirclePlus/>
             </Button>
 
             <Dialog open={openAddTransactionDialog} onOpenChange={setOpenAddTransactionDialog}>
                 <DialogContent>
-                    <DialogHeader>
-                        <CreateTransactionForm closeDialog={() => setOpenAddTransactionDialog(false)}/>
-                    </DialogHeader>
+                    <CreateTransactionForm closeDialog={() => setOpenAddTransactionDialog(false)}/>
                 </DialogContent>
             </Dialog>
         </main>
