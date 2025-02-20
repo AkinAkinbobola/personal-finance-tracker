@@ -7,11 +7,14 @@ const AppLayout = () => {
         <SidebarProvider>
             <AppSidebar/>
 
-            <main className={"w-full"}>
-                <SidebarTrigger/>
-                <div className={"container mx-auto px-2 py-2 md:py-6 sm:px-6 lg:px-8"}>
+            <main className={"flex-1"}>
+
+                <SidebarTrigger className={"m-2"}/>
+
+
+                <main className={"w-full h-full"}>
                     <Outlet/>
-                </div>
+                </main>
             </main>
         </SidebarProvider>
     );

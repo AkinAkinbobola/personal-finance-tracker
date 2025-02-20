@@ -4,8 +4,9 @@ import {Transaction} from "@/types/Transaction.ts";
 import {Dialog, DialogContent, DialogHeader,} from "@/components/ui/dialog"
 import {useState} from "react";
 import CreateTransactionForm from "@/components/shared/CreateTransactionForm.tsx";
-import {Loader2} from "lucide-react";
+import {CirclePlus, Loader2} from "lucide-react";
 import TransactionItem from "@/components/TransactionItem.tsx";
+import {Button} from "@/components/ui/button.tsx";
 
 const TransactionPage = () => {
     const [openAddTransactionDialog, setOpenAddTransactionDialog] = useState(false)
@@ -21,10 +22,10 @@ const TransactionPage = () => {
 
 
     return (
-        <main>
+        <main className={"h-full relative px-2 py-2 md:py-4 sm:px-6 lg:px-8"}>
             {transactions.isLoading &&
                 <div
-                    className={"w-full flex items-center justify-center min-h-screen h-full"}>
+                    className={"w-full flex items-center justify-center h-full"}>
                     <Loader2 className={"animate-spin"}/>
                 </div>
             }
@@ -39,7 +40,10 @@ const TransactionPage = () => {
                 </ul>
             )}
 
-            {/*<Button onClick={() => setOpenAddTransactionDialog(true)}>Add transaction</Button>*/}
+            <Button className={"fixed bottom-0 right-0 mx-2 my-2 md:my-6 sm:mx-6 lg:mx-8 size-14 rounded-full cursor-pointer"}
+                    onClick={() => setOpenAddTransactionDialog(true)}>
+                <CirclePlus />
+            </Button>
 
             <Dialog open={openAddTransactionDialog} onOpenChange={setOpenAddTransactionDialog}>
                 <DialogContent>

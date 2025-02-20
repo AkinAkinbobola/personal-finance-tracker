@@ -40,7 +40,7 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
             </div>
 
             <div className={"space-x-2"}>
-                <Button size={"icon"} variant={"outline"} onClick={() => {
+                <Button size={"icon"} variant={"outline"} className={"cursor-pointer"} onClick={() => {
                     setSelectedTransaction(transaction)
                     setOpenEditTransactionDialog(true)
                 }}>
@@ -48,7 +48,7 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
                 </Button>
 
                 <Button size={"icon"} variant={"destructive"}
-                        onClick={() => deleteTransactionMutation.mutate(transaction.id)}>
+                        onClick={() => deleteTransactionMutation.mutate(transaction.id)} className={"cursor-pointer"}>
                     <Trash2/>
                 </Button>
             </div>
