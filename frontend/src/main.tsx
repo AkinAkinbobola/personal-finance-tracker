@@ -17,12 +17,14 @@ createRoot(document.getElementById('root')!).render(
             <BrowserRouter>
                 <Routes>
                     <Route element={<MainLayout/>}>
-                        <Route path="/" element={<LandingPage/>}/>
-                        <Route path={"/about"} element={<AboutPage/>}/>
-                        <Route path="/services" element={<ServicesPage/>}/>
+                        <Route index element={<LandingPage/>}/>
+                        <Route path={"about"} element={<AboutPage/>}/>
+                        <Route path="services" element={<ServicesPage/>}/>
                     </Route>
 
-                    <Route path="/transactions" element={<TransactionPage/>}/>
+                    <Route path={"/app"}>
+                        <Route path={"transactions"} element={<TransactionPage/>}/>
+                    </Route>
                 </Routes>
             </BrowserRouter>
 

@@ -3,7 +3,7 @@ import {Mail, MessageCircle} from "lucide-react";
 
 const Footer = () => {
     return (
-        <div className={"flex flex-col gap-7 py-8"}>
+        <div className={"flex flex-col gap-3 md:gap-7 py-3 md:py-8"}>
             <Separator/>
 
             <div className={"flex justify-between"}>

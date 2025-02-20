@@ -25,7 +25,7 @@ const LandingPage = () => {
                         </div>
 
                         <Button className={"w-full md:w-fit font-bold"} size={"lg"} asChild>
-                            <Link to={"/transactions"}>
+                            <Link to={"/app/transactions"}>
                                 Get Started
                             </Link>
                         </Button>
