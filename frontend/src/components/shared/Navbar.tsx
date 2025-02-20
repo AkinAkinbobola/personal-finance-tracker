@@ -1,6 +1,6 @@
 import {Link, NavLink} from "react-router";
 import {Button} from "@/components/ui/button.tsx";
-import MobileNavbar from "@/components/MobileNavbar.tsx";
+import MobileNavbar from "@/components/shared/MobileNavbar.tsx";
 
 const Navbar = () => {
     return (

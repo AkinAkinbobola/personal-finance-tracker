@@ -1,6 +1,6 @@
 import {Outlet} from "react-router";
-import Navbar from "@/components/Navbar.tsx";
-import Footer from "@/components/Footer.tsx";
+import Navbar from "@/components/shared/Navbar.tsx";
+import Footer from "@/components/shared/Footer.tsx";
 
 const MainLayout = () => {
     return (

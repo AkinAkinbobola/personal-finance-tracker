@@ -4,8 +4,8 @@ import {Transaction} from "@/types/Transaction.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Dialog, DialogContent, DialogHeader,} from "@/components/ui/dialog"
 import {useState} from "react";
-import CreateTransactionForm from "@/components/CreateTransactionForm.tsx";
-import EditTransactionForm from "@/components/EditTransactionForm.tsx";
+import CreateTransactionForm from "@/components/shared/CreateTransactionForm.tsx";
+import EditTransactionForm from "@/components/shared/EditTransactionForm.tsx";
 
 const TransactionPage = () => {
     const [openAddTransactionDialog, setOpenAddTransactionDialog] = useState(false)
