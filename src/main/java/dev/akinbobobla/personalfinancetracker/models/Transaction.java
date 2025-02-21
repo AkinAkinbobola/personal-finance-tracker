@@ -27,8 +27,9 @@ public class Transaction {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "category", nullable = false)
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @Column(name = "date", nullable = false)
     private LocalDate date;

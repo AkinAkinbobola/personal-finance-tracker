@@ -4,11 +4,16 @@ import {Textarea} from "@/components/ui/textarea.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {cn} from "@/lib/utils.ts";
+import {capitalize, cn} from "@/lib/utils.ts";
 import {format} from "date-fns";
-import {CalendarIcon} from "lucide-react";
+import {CalendarIcon, Plus} from "lucide-react";
 import {Calendar} from "@/components/ui/calendar.tsx";
 import {UseFormReturn} from "react-hook-form";
+import {useQuery} from "@tanstack/react-query";
+import {axiosInstance} from "@/axios/axiosInstance.ts";
+import {Category} from "@/types/Category.ts";
+import {useState} from "react";
+import {Separator} from "@/components/ui/separator.tsx";
 
 interface TransactionFormProps {
     form: UseFormReturn<any>,
@@ -16,6 +21,14 @@ interface TransactionFormProps {
 }
 
 const TransactionForm = ({form, onSubmit}: TransactionFormProps) => {
+    const categories = useQuery({
+        queryKey: ["categories"],
+        queryFn: async () => {
+            const response = await axiosInstance.get<Category[]>("/categories")
+            return response.data
+        }
+    })
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-4"}>
@@ -58,20 +71,65 @@ const TransactionForm = ({form, onSubmit}: TransactionFormProps) => {
                 />
 
                 <div className={"flex space-x-4"}>
-                    <FormField
-                        control={form.control}
-                        name={"category"}
-                        render={({field}) => (
-                            <FormItem className={"w-1/2"}>
-                                <FormLabel>Category</FormLabel>
-                                <FormControl>
-                                    <Input placeholder={"Category"} {...field} className={"mt-2"}/>
-                                </FormControl>
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                    />
+                    {
+                        categories.data &&
 
+                        <FormField
+                            control={form.control}
+                            name="category"
+                            render={({field}) => {
+                                const [newCategory, setNewCategory] = useState("");
+                                const [categoryList, setCategoryList] = useState(categories.data || []);
+
+                                const handleAddCategory = () => {
+                                    if (newCategory.trim() && !categoryList.some(c => c.name === newCategory)) {
+                                        const newCat = {id: Date.now(), name: newCategory};
+                                        setCategoryList([...categoryList, newCat]);
+                                        field.onChange(newCategory);
+                                        setNewCategory("");
+                                    }
+                                };
+
+                                return (
+                                    <FormItem className="w-1/2">
+                                        <FormLabel>Category</FormLabel>
+                                        <FormControl>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <SelectTrigger className="mt-2">
+                                                    <SelectValue placeholder="Select a category"/>
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {categoryList.map((category) => (
+                                                        <SelectItem key={category.id} value={category.name}>
+                                                            {capitalize(category.name)}
+                                                        </SelectItem>
+                                                    ))}
+                                                    <Separator className={"my-2"}/>
+                                                    <div className={"flex gap-2 px-2 pb-2"}>
+                                                        <Input
+                                                            type="text"
+                                                            placeholder="Add category"
+                                                            value={newCategory}
+                                                            onChange={(e) => setNewCategory(e.target.value)}
+                                                        />
+                                                        <Button
+                                                            type="button"
+                                                            onClick={handleAddCategory}
+                                                            size={"icon"}
+                                                            className={"cursor-pointer"}
+                                                        >
+                                                            <Plus/>
+                                                        </Button>
+                                                    </div>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                );
+                            }}
+                        />
+                    }
                     <FormField
                         control={form.control}
                         name={"type"}
@@ -80,11 +138,9 @@ const TransactionForm = ({form, onSubmit}: TransactionFormProps) => {
                                 <FormLabel>Type</FormLabel>
                                 <FormControl>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger className={"mt-2"}>
-                                                <SelectValue placeholder="Select a type"/>
-                                            </SelectTrigger>
-                                        </FormControl>
+                                        <SelectTrigger className={"mt-2"}>
+                                            <SelectValue placeholder="Select a type"/>
+                                        </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="INCOME">Income</SelectItem>
                                             <SelectItem value="EXPENSE">Expense</SelectItem>
@@ -137,7 +193,7 @@ const TransactionForm = ({form, onSubmit}: TransactionFormProps) => {
 
 
                 <div className={"flex justify-end"}>
-                    <Button type={"submit"} size={"lg"} className={"rounded-3xl"}>Submit</Button>
+                    <Button type={"submit"} size={"lg"} className={"rounded-3xl cursor-pointer"}>Submit</Button>
                 </div>
             </form>
         </Form>);

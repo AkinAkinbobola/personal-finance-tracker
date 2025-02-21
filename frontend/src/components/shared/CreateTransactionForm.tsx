@@ -9,9 +9,15 @@ import {toast} from "sonner";
 const formSchema = z.object({
     amount: z.coerce.number().positive({message: 'Amount must be positive'}),
     description: z.string(),
-    category: z.string().min(1, {message: 'Category is required'}),
-    date: z.date(),
-    type: z.string(),
+    category: z.string({
+        required_error: 'Category is required',
+    }).min(1, {message: 'Category is required'}),
+    date: z.date({
+        required_error: 'Date is required'
+    }),
+    type: z.string({
+        required_error: 'Type is required'
+    }).min(1, {message: 'Type is required'}),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -43,7 +49,7 @@ const CreateTransactionForm = ({closeDialog}: TransactionFormProps) => {
             description: '',
             category: '',
             date: new Date(),
-            type: 'EXPENSE',
+            type: '',
         },
     })
 

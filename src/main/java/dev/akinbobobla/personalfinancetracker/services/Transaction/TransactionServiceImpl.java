@@ -1,7 +1,9 @@
 package dev.akinbobobla.personalfinancetracker.services.Transaction;
 
 import dev.akinbobobla.personalfinancetracker.exceptions.ResourceNotFoundException;
+import dev.akinbobobla.personalfinancetracker.models.Category;
 import dev.akinbobobla.personalfinancetracker.models.Transaction;
+import dev.akinbobobla.personalfinancetracker.repositories.CategoryRepository;
 import dev.akinbobobla.personalfinancetracker.repositories.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -13,9 +15,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public Transaction createTransaction (Transaction transaction) {
+        Category category = categoryRepository.findByName(transaction.getCategory().getName())
+                .orElseGet(() -> categoryRepository.save(transaction.getCategory()));
+
+        transaction.setCategory(category);
+
         return transactionRepository.save(transaction);
     }
 
