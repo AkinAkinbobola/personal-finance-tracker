@@ -8,8 +8,10 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar.tsx"
-import {HandCoins, Home} from "lucide-react";
+import {ChevronUp, HandCoins, Home} from "lucide-react";
 import {NavLink} from "react-router";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {Avatar, AvatarFallback} from "@/components/ui/avatar.tsx";
 
 const menuItems = [
     {
@@ -52,11 +54,31 @@ const AppSidebar = () => {
             </SidebarContent>
 
             <SidebarFooter>
-                <SidebarMenuButton asChild>
-                    <NavLink to={"/"}>
-                        Logout
-                    </NavLink>
-                </SidebarMenuButton>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <SidebarMenuButton>
+                                    <Avatar className={"size-8"}>
+                                        <AvatarFallback>AA</AvatarFallback>
+                                    </Avatar>
+                                    <div>Username</div>
+                                    <ChevronUp className="ml-auto"/>
+                                </SidebarMenuButton>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                side="top"
+                                className="w-[--radix-popper-anchor-width]"
+                            >
+                                <DropdownMenuItem asChild>
+                                    <NavLink to={"/"}>
+                                        Sign out
+                                    </NavLink>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
     );

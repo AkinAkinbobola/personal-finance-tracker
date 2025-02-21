@@ -9,12 +9,14 @@ import AboutPage from "@/pages/AboutPage.tsx";
 import ServicesPage from "@/pages/ServicesPage.tsx";
 import AppLayout from "@/layouts/AppLayout.tsx";
 import DashboardPage from "@/pages/DashboardPage.tsx";
+import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
+
             <BrowserRouter>
                 <Routes>
                     <Route element={<MainLayout/>}>
@@ -30,7 +32,7 @@ createRoot(document.getElementById('root')!).render(
                 </Routes>
             </BrowserRouter>
 
-            {/*<ReactQueryDevtools initialIsOpen={false}/>*/}
+            <ReactQueryDevtools  initialIsOpen={false}/>
         </QueryClientProvider>
     </StrictMode>
 )

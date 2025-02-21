@@ -5,6 +5,7 @@ import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import TransactionForm from "@/components/shared/TransactionForm.tsx";
+import {toast} from "sonner";
 
 interface EditTransactionFormProps {
     closeDialog: () => void
@@ -30,6 +31,10 @@ const EditTransactionForm = ({transaction, closeDialog}: EditTransactionFormProp
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["transactions"]})
+            toast.success('Transaction edited successfully')
+        },
+        onError: error => {
+            toast.error(error.message)
         }
     })
 

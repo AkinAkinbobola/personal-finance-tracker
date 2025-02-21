@@ -4,6 +4,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {axiosInstance} from "@/axios/axiosInstance.ts";
 import TransactionForm from "@/components/shared/TransactionForm.tsx";
+import {toast} from "sonner";
 
 const formSchema = z.object({
     amount: z.coerce.number().positive({message: 'Amount must be positive'}),
@@ -28,6 +29,10 @@ const CreateTransactionForm = ({closeDialog}: TransactionFormProps) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["transactions"]})
+            toast.success('Transaction added successfully')
+        },
+        onError: error => {
+            toast.error(error.message)
         }
     })
 
