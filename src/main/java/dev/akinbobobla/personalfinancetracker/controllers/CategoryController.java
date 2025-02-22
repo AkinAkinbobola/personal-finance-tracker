@@ -32,4 +32,13 @@ public class CategoryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/{id}/budgets")
+    public ResponseEntity<?> getBudget(@PathVariable Long id){
+        try {
+            return ResponseEntity.ok(categoryService.getBudgets(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
