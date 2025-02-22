@@ -1,5 +1,6 @@
 package dev.akinbobobla.personalfinancetracker.services.Category;
 
+import dev.akinbobobla.personalfinancetracker.exceptions.ResourceNotFoundException;
 import dev.akinbobobla.personalfinancetracker.models.Category;
 import dev.akinbobobla.personalfinancetracker.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,5 +16,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List <Category> getCategories () {
         return categoryRepository.findAll();
+    }
+
+    @Override
+    public Category createCategory (Category category) {
+        return categoryRepository.save(category);
+    }
+
+    @Override
+    public Category getCategoryById (Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 }

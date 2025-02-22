@@ -28,4 +28,8 @@ public class Category {
     @JsonIgnore
     @ToString.Exclude
     List <Transaction> transactions = new ArrayList <>();
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Budget> budgets = new ArrayList <>();
 }

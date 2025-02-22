@@ -1,20 +1,35 @@
 package dev.akinbobobla.personalfinancetracker.controllers;
 
+import dev.akinbobobla.personalfinancetracker.dtos.CategoryDto;
+import dev.akinbobobla.personalfinancetracker.services.Category.CategoryMapper;
 import dev.akinbobobla.personalfinancetracker.services.Category.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.url}/categories")
 public class CategoryController {
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
     @GetMapping
     public ResponseEntity <?> getAllCategories () {
-        return ResponseEntity.ok(categoryService.getCategories());
+        try {
+            return ResponseEntity.ok(categoryService.getCategories());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity <?> createCategory (@Valid @RequestBody CategoryDto categoryDto) {
+        try {
+            return ResponseEntity.ok(categoryService.createCategory(categoryMapper.toEntity(categoryDto)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
