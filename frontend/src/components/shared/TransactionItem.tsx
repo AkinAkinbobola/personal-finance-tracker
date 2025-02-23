@@ -32,6 +32,7 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
             className={`bg-card py-4 px-4 rounded-xl flex justify-between items-center ${transaction.type == "INCOME" ? "bg-green-300" : "bg-red-300"}`}>
             <div className={`font-bold text-xl`}>
                 {transaction.type == "INCOME" ? "+" : "-"}
+                &#8358;
                 {transaction.amount}
             </div>
 

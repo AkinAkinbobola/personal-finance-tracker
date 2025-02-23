@@ -8,7 +8,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar.tsx"
-import {ChevronUp, HandCoins, Home} from "lucide-react";
+import {ChevronUp, HandCoins, Home, PiggyBank} from "lucide-react";
 import {NavLink} from "react-router";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {Avatar, AvatarFallback} from "@/components/ui/avatar.tsx";
@@ -23,6 +23,11 @@ const menuItems = [
         title: "Transactions",
         icon: HandCoins,
         url: "/app/transactions",
+    },
+    {
+        title: "Budgets",
+        icon: PiggyBank,
+        url: "/app/budgets",
     }
 ]
 

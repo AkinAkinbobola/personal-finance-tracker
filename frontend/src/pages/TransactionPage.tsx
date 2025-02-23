@@ -5,7 +5,7 @@ import {Dialog, DialogContent,} from "@/components/ui/dialog"
 import {useState} from "react";
 import CreateTransactionForm from "@/components/shared/CreateTransactionForm.tsx";
 import {CirclePlus, Loader2} from "lucide-react";
-import TransactionItem from "@/components/TransactionItem.tsx";
+import TransactionItem from "@/components/shared/TransactionItem.tsx";
 import {Button} from "@/components/ui/button.tsx";
 
 const TransactionPage = () => {
