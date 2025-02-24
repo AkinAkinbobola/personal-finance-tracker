@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 
 @Builder
 @AllArgsConstructor
@@ -27,9 +28,19 @@ public class Budget {
     private BigDecimal totalAmount;
 
     @Column(name = "month", nullable = false)
-    private YearMonth month;
+    private String month;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @PrePersist
+    public void prePersist () {
+        YearMonth yearMonth = YearMonth.parse(this.month, DateTimeFormatter.ofPattern("yyyy-MM"));
+        this.title = yearMonth.getMonth().name() + " " + yearMonth.getYear();
+    }
+
+    public void setMonth (YearMonth yearMonth) {
+        this.month = yearMonth.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+    }
 }

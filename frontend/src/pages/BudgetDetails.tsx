@@ -24,13 +24,15 @@ const BudgetDetails = () => {
         <main className={"px-2 py-2 md:py-4 sm:px-6 lg:px-8 h-full"}>
             {budgets.isLoading && <Loading/>}
 
-            {budgets.data && budgets.data.map(budget => (
-                <Card key={budget.id}>
-                    <CardContent>
-                        <div>{budget.title}</div>
-                    </CardContent>
-                </Card>
-            ))}
+            <div className={"space-y-4"}>
+                {budgets.data && budgets.data.map(budget => (
+                    <Card key={budget.id}>
+                        <CardContent>
+                            <div>{budget.title}</div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
         </main>
     );
 };

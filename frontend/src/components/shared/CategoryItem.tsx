@@ -5,6 +5,7 @@ import {Category} from "@/types/Category";
 import {NavLink} from "react-router";
 import {useState} from "react";
 import {Dialog, DialogContent, DialogTitle} from "@/components/ui/dialog.tsx";
+import AddBudgetForm from "@/components/shared/AddBudgetForm.tsx";
 
 interface CategoryItemProps {
     category: Category
@@ -30,8 +31,9 @@ const CategoryItem = ({category}: CategoryItemProps) => {
 
                 <Dialog open={openAddBudget} onOpenChange={setOpenAddBudget}>
                     <DialogContent>
-                        <DialogTitle>Create a Budget</DialogTitle>
-                        <h1>Add Budget</h1>
+                        <DialogTitle>Create Budget</DialogTitle>
+
+                        <AddBudgetForm category={category} closeDialog={() => setOpenAddBudget(false)}/>
                     </DialogContent>
                 </Dialog>
             </CardContent>

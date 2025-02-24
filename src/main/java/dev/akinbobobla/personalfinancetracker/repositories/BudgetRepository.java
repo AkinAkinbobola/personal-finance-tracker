@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BudgetRepository extends JpaRepository <Budget, Long> {
-    Optional <Budget> findByMonthAndCategory (YearMonth month, Category category);
+    Optional <Budget> findByMonthAndCategory (String month, Category category);
 
     List<Budget> findByCategory (Category category);
 }

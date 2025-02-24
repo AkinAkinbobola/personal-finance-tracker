@@ -7,7 +7,10 @@ import TransactionForm from "@/components/shared/TransactionForm.tsx";
 import {toast} from "sonner";
 
 const formSchema = z.object({
-    amount: z.coerce.number().positive({message: 'Amount must be positive'}),
+    amount: z.coerce.number({
+        required_error: "Total amount is required",
+        invalid_type_error: "Total amount must be a number"
+    }).positive({message: 'Amount must be positive'}),
     description: z.string(),
     category: z.string({
         required_error: 'Category is required',

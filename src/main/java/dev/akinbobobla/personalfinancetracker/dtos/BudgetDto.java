@@ -15,8 +15,6 @@ import java.time.YearMonth;
  */
 @Value
 public class BudgetDto implements Serializable {
-    @NotBlank(message = "Title is required")
-    String title;
     @Positive(message = "Valid amount required")
     BigDecimal totalAmount;
     @NotNull(message = "Month is required")

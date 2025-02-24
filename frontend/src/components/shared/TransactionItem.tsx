@@ -4,7 +4,7 @@ import {Button} from "@/components/ui/button.tsx";
 import {Pencil, Trash2} from "lucide-react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {axiosInstance} from "@/axios/axiosInstance.ts";
-import {Dialog, DialogContent, DialogHeader} from "@/components/ui/dialog.tsx";
+import {Dialog, DialogContent, DialogTitle} from "@/components/ui/dialog.tsx";
 import EditTransactionForm from "@/components/shared/EditTransactionForm.tsx";
 import {useState} from "react";
 import {Card, CardContent} from "@/components/ui/card.tsx";
@@ -60,14 +60,13 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
 
             <Dialog open={openEditTransactionDialog} onOpenChange={setOpenEditTransactionDialog}>
                 <DialogContent>
-                    <DialogHeader>
+                    <DialogTitle>Edit Transaction</DialogTitle>
                         {
                             selectedTransaction &&
                             <EditTransactionForm
                                 closeDialog={() => setOpenEditTransactionDialog(false)}
                                 transaction={selectedTransaction}/>
                         }
-                    </DialogHeader>
                 </DialogContent>
             </Dialog>
         </Card>
