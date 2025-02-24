@@ -31,9 +31,10 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
     return (
         <Card
             className={`${transaction.type === "INCOME"
-                ? "bg-green-600 text-white dark:bg-green-500"
-                : "bg-red-600 text-white dark:bg-red-500"}`
-            }>
+                ? "bg-green-100 text-green-700 border border-green-600 dark:bg-green-900 dark:text-green-300"
+                : "bg-red-100 text-red-700 border border-red-600 dark:bg-red-900 dark:text-red-300"}`
+            }
+        >
             <CardContent className={"flex justify-between items-center"}>
                 <div className={`font-bold text-xl`}>
                     {transaction.type == "INCOME" ? "+" : "-"}
