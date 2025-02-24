@@ -30,7 +30,10 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
 
     return (
         <Card
-            className={`${transaction.type == "INCOME" ? "bg-green-300" : "bg-red-300"}`}>
+            className={`${transaction.type === "INCOME"
+                ? "bg-green-600 text-white dark:bg-green-500"
+                : "bg-red-600 text-white dark:bg-red-500"}`
+            }>
             <CardContent className={"flex justify-between items-center"}>
                 <div className={`font-bold text-xl`}>
                     {transaction.type == "INCOME" ? "+" : "-"}
@@ -43,7 +46,7 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
                 </div>
 
                 <div className={"space-x-2"}>
-                    <Button size={"icon"} variant={"outline"} className={"cursor-pointer"} onClick={() => {
+                    <Button size={"icon"} variant={"secondary"} className={"cursor-pointer"} onClick={() => {
                         setSelectedTransaction(transaction)
                         setOpenEditTransactionDialog(true)
                     }}>
