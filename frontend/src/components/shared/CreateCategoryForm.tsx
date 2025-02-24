@@ -58,7 +58,7 @@ const CreateCategoryForm = ({closeDialog}: CreateCategoryFormProps) => {
                         <FormItem>
                             <FormLabel>Name</FormLabel>
                             <FormControl>
-                                <Input {...field} placeholder={"Category Name"} className={"mt-2"}/>
+                                <Input {...field} placeholder={"Name"} className={"mt-2"}/>
                             </FormControl>
                         </FormItem>
                     )}
