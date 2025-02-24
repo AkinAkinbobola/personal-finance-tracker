@@ -31,5 +31,6 @@ public class Category {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @ToString.Exclude
     List<Budget> budgets = new ArrayList <>();
 }
