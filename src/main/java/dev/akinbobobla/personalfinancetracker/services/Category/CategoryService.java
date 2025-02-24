@@ -13,4 +13,6 @@ public interface CategoryService {
     Category getCategoryById (Long id);
 
     List <Budget> getBudgets (Long id);
+
+    Category getCategoryByName (String name);
 }

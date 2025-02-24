@@ -12,6 +12,7 @@ import DashboardPage from "@/pages/DashboardPage.tsx";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import BudgetPage from "@/pages/BudgetPage.tsx";
 import CategoriesPage from "@/pages/CategoriesPage.tsx";
+import BudgetDetails from "@/pages/BudgetDetails.tsx";
 
 const queryClient = new QueryClient()
 
@@ -30,13 +31,16 @@ createRoot(document.getElementById('root')!).render(
                     <Route path={"/app"} element={<AppLayout/>}>
                         <Route path={"transactions"} element={<TransactionPage/>}/>
                         <Route path={"dashboard"} element={<DashboardPage/>}/>
-                        <Route path={"budgets"} element={<BudgetPage/>}/>
+                        <Route path={"budgets"}>
+                            <Route index element={<BudgetPage/>}/>
+                            <Route path={":category"} element={<BudgetDetails/>}/>
+                        </Route>
                         <Route path={"categories"} element={<CategoriesPage/>}/>
                     </Route>
                 </Routes>
             </BrowserRouter>
 
-            <ReactQueryDevtools  initialIsOpen={false}/>
+            <ReactQueryDevtools initialIsOpen={false}/>
         </QueryClientProvider>
     </StrictMode>
 )

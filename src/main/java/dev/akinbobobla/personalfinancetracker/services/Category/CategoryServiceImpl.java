@@ -21,6 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category createCategory (Category category) {
+        category.setName(category.getName().toLowerCase());
         return categoryRepository.save(category);
     }
 
@@ -33,5 +34,11 @@ public class CategoryServiceImpl implements CategoryService {
     public List <Budget> getBudgets (Long id) {
         return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"))
                 .getBudgets();
+    }
+
+    @Override
+    public Category getCategoryByName (String name) {
+        return categoryRepository.findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 }

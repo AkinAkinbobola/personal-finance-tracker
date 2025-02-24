@@ -7,6 +7,8 @@ import dev.akinbobobla.personalfinancetracker.services.Category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BudgetServiceImpl implements BudgetService {
@@ -26,5 +28,11 @@ public class BudgetServiceImpl implements BudgetService {
                                 .category(category)
                                 .build()
                 ));
+    }
+
+    @Override
+    public List<Budget> getBudgetByCategory (Category category) {
+        Category existingCategory = categoryService.getCategoryByName(category.getName());
+        return budgetRepository.findByCategory(existingCategory);
     }
 }

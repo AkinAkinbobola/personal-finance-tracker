@@ -23,7 +23,6 @@ public class TransactionController {
             Transaction transaction = transactionMapper.toEntity(transactionDto);
             return ResponseEntity.ok(transactionService.createTransaction(transaction));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
     }

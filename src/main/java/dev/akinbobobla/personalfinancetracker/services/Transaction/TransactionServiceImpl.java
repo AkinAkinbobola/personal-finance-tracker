@@ -19,8 +19,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction createTransaction (Transaction transaction) {
-        Category category = categoryRepository.findByName(transaction.getCategory().getName())
-                .orElseGet(() -> categoryRepository.save(transaction.getCategory()));
+        Category category = categoryRepository.findByName(transaction.getCategory().getName().toLowerCase())
+                .orElseGet(() -> {
+                    transaction.getCategory().setName(transaction.getCategory().getName().toLowerCase());
+                    return categoryRepository.save(transaction.getCategory());
+                });
 
         transaction.setCategory(category);
 

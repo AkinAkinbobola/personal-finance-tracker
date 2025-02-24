@@ -1,6 +1,7 @@
 package dev.akinbobobla.personalfinancetracker.controllers;
 
 import dev.akinbobobla.personalfinancetracker.dtos.CategoryDto;
+import dev.akinbobobla.personalfinancetracker.responses.ErrorResponse;
 import dev.akinbobobla.personalfinancetracker.services.Category.CategoryMapper;
 import dev.akinbobobla.personalfinancetracker.services.Category.CategoryService;
 import jakarta.validation.Valid;
@@ -20,7 +21,7 @@ public class CategoryController {
         try {
             return ResponseEntity.ok(categoryService.getCategories());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
     }
 
@@ -29,7 +30,7 @@ public class CategoryController {
         try {
             return ResponseEntity.ok(categoryService.createCategory(categoryMapper.toEntity(categoryDto)));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
     }
 
@@ -38,7 +39,7 @@ public class CategoryController {
         try {
             return ResponseEntity.ok(categoryService.getBudgets(id));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
     }
 }
