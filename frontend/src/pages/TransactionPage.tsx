@@ -4,9 +4,10 @@ import {Transaction} from "@/types/Transaction.ts";
 import {Dialog, DialogContent,} from "@/components/ui/dialog"
 import {useState} from "react";
 import CreateTransactionForm from "@/components/shared/CreateTransactionForm.tsx";
-import {CirclePlus, Loader2} from "lucide-react";
+import {CirclePlus} from "lucide-react";
 import TransactionItem from "@/components/shared/TransactionItem.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import Loading from "@/components/shared/Loading.tsx";
 
 const TransactionPage = () => {
     const [openAddTransactionDialog, setOpenAddTransactionDialog] = useState(false)
@@ -24,10 +25,7 @@ const TransactionPage = () => {
     return (
         <main className={"h-full relative px-2 py-2 md:py-4 sm:px-6 lg:px-8"}>
             {transactions.isLoading &&
-                <div
-                    className={"w-full flex items-center justify-center h-full"}>
-                    <Loader2 className={"animate-spin"}/>
-                </div>
+                <Loading/>
             }
 
             {transactions.isError && <p>Error</p>}
