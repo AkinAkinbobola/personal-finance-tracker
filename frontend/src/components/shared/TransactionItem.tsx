@@ -7,6 +7,7 @@ import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {Dialog, DialogContent, DialogHeader} from "@/components/ui/dialog.tsx";
 import EditTransactionForm from "@/components/shared/EditTransactionForm.tsx";
 import {useState} from "react";
+import {Card, CardContent} from "@/components/ui/card.tsx";
 
 interface TransactionItemProps {
     transaction: Transaction
@@ -28,31 +29,34 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
     })
 
     return (
-        <div
-            className={`bg-card py-4 px-4 rounded-xl flex justify-between items-center ${transaction.type == "INCOME" ? "bg-green-300" : "bg-red-300"}`}>
-            <div className={`font-bold text-xl`}>
-                {transaction.type == "INCOME" ? "+" : "-"}
-                &#8358;
-                {transaction.amount}
-            </div>
+        <Card
+            className={`${transaction.type == "INCOME" ? "bg-green-300" : "bg-red-300"}`}>
+            <CardContent className={"flex justify-between items-center"}>
+                <div className={`font-bold text-xl`}>
+                    {transaction.type == "INCOME" ? "+" : "-"}
+                    &#8358;
+                    {transaction.amount}
+                </div>
 
-            <div>
-                {format(new Date(transaction.date), "MMM dd, yyyy")}
-            </div>
+                <div>
+                    {format(new Date(transaction.date), "MMM dd, yyyy")}
+                </div>
 
-            <div className={"space-x-2"}>
-                <Button size={"icon"} variant={"outline"} className={"cursor-pointer"} onClick={() => {
-                    setSelectedTransaction(transaction)
-                    setOpenEditTransactionDialog(true)
-                }}>
-                    <Pencil/>
-                </Button>
+                <div className={"space-x-2"}>
+                    <Button size={"icon"} variant={"outline"} className={"cursor-pointer"} onClick={() => {
+                        setSelectedTransaction(transaction)
+                        setOpenEditTransactionDialog(true)
+                    }}>
+                        <Pencil/>
+                    </Button>
 
-                <Button size={"icon"} variant={"destructive"}
-                        onClick={() => deleteTransactionMutation.mutate(transaction.id)} className={"cursor-pointer"}>
-                    <Trash2/>
-                </Button>
-            </div>
+                    <Button size={"icon"} variant={"destructive"}
+                            onClick={() => deleteTransactionMutation.mutate(transaction.id)}
+                            className={"cursor-pointer"}>
+                        <Trash2/>
+                    </Button>
+                </div>
+            </CardContent>
 
             <Dialog open={openEditTransactionDialog} onOpenChange={setOpenEditTransactionDialog}>
                 <DialogContent>
@@ -66,7 +70,7 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
-        </div>
+        </Card>
     );
 };
 
