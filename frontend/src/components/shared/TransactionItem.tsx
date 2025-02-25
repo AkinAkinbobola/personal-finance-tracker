@@ -8,6 +8,7 @@ import {Dialog, DialogContent, DialogTitle} from "@/components/ui/dialog.tsx";
 import EditTransactionForm from "@/components/shared/EditTransactionForm.tsx";
 import {useState} from "react";
 import {Card, CardContent} from "@/components/ui/card.tsx";
+import {formatMoney} from "@/lib/utils.ts";
 
 interface TransactionItemProps {
     transaction: Transaction
@@ -36,10 +37,13 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
             }
         >
             <CardContent className={"flex justify-between items-center"}>
-                <div className={`font-bold text-xl`}>
-                    {transaction.type == "INCOME" ? "+" : "-"}
-                    &#8358;
-                    {transaction.amount}
+                <div className={`font-bold text-xl flex items-center w-40 gap-1`}>
+                    <span>
+                        {transaction.type == "INCOME" ? "+" : "-"}
+                    </span>
+                    <span className={"truncate"}>
+                        {formatMoney(transaction.amount)}
+                    </span>
                 </div>
 
                 <div>
@@ -65,12 +69,12 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
             <Dialog open={openEditTransactionDialog} onOpenChange={setOpenEditTransactionDialog}>
                 <DialogContent>
                     <DialogTitle>Edit Transaction</DialogTitle>
-                        {
-                            selectedTransaction &&
-                            <EditTransactionForm
-                                closeDialog={() => setOpenEditTransactionDialog(false)}
-                                transaction={selectedTransaction}/>
-                        }
+                    {
+                        selectedTransaction &&
+                        <EditTransactionForm
+                            closeDialog={() => setOpenEditTransactionDialog(false)}
+                            transaction={selectedTransaction}/>
+                    }
                 </DialogContent>
             </Dialog>
         </Card>
