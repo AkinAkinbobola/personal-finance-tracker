@@ -36,9 +36,10 @@ const CreateTransactionForm = ({closeDialog}: TransactionFormProps) => {
         mutationFn: async (values: FormValues) => {
             await axiosInstance.post('/transactions', values)
         },
-        onSuccess: () => {
+        onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({queryKey: ["transactions"]})
-            toast.success('Transaction added successfully')
+            queryClient.invalidateQueries({queryKey: ["budgets", variables.category]})
+            toast.success(`Transaction added successfully`)
         },
         onError: error => {
             toast.error(error.message)

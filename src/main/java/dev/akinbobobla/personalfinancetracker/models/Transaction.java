@@ -1,5 +1,6 @@
 package dev.akinbobobla.personalfinancetracker.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.akinbobobla.personalfinancetracker.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,11 @@ public class Transaction {
 
     @Column(name = "type", nullable = false)
     private TransactionType type;
+
+    @ManyToOne
+    @JoinColumn(name = "budget_id")
+    @JsonIgnore
+    private Budget budget;
 
     @PrePersist
     protected void onCreate() {

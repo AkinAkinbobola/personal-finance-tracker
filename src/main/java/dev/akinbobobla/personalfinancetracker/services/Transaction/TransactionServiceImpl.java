@@ -1,21 +1,20 @@
 package dev.akinbobobla.personalfinancetracker.services.Transaction;
 
-import dev.akinbobobla.personalfinancetracker.enums.TransactionType;
 import dev.akinbobobla.personalfinancetracker.exceptions.ResourceNotFoundException;
 import dev.akinbobobla.personalfinancetracker.models.Budget;
 import dev.akinbobobla.personalfinancetracker.models.Category;
 import dev.akinbobobla.personalfinancetracker.models.Transaction;
+import dev.akinbobobla.personalfinancetracker.repositories.BudgetRepository;
 import dev.akinbobobla.personalfinancetracker.repositories.CategoryRepository;
 import dev.akinbobobla.personalfinancetracker.repositories.TransactionRepository;
-import dev.akinbobobla.personalfinancetracker.services.Budget.BudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -23,40 +22,45 @@ import java.util.Optional;
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
-    private final BudgetService budgetService;
+    private final BudgetRepository budgetRepository;
 
     @Override
     public Transaction createTransaction (Transaction transaction) {
-        Category category = categoryRepository.findByName(transaction.getCategory().getName().toLowerCase())
+        String categoryName = transaction.getCategory().getName().toLowerCase();
+
+        Category category = categoryRepository.findByName(categoryName)
                 .orElseGet(() -> {
-                    transaction.getCategory().setName(transaction.getCategory().getName().toLowerCase());
-                    return categoryRepository.save(transaction.getCategory());
+                    Category newCategory = Category.builder()
+                            .name(categoryName)
+                            .transactions(new ArrayList <>())
+                            .budgets(new ArrayList <>())
+                            .build();
+                    return categoryRepository.save(newCategory);
                 });
 
         transaction.setCategory(category);
 
+        String transactionMonth = getMonth(transaction);
+
+        Optional <Budget> budgetOptional = budgetRepository.findByMonthAndCategory(transactionMonth, category);
+
+        Budget budget = budgetOptional.orElseGet(() -> budgetRepository.save(
+                Budget.builder()
+                        .totalAmount(BigDecimal.valueOf(500000))
+                        .month(transactionMonth)
+                        .category(category)
+                        .transactions(new ArrayList <>())
+                        .build()
+        ));
+
+        transaction.setBudget(budget);
+
         Transaction newTransaction = transactionRepository.save(transaction);
 
-        List <Budget> budgets = budgetService.getBudgetByCategory(category).stream()
-                .filter(budget -> budget.getMonth().equals(getMonth(newTransaction))).toList();
+        budget.getTransactions().add(newTransaction);
+        budget.updateSpentAmount();
 
-        Optional <Budget> transactionBudget = budgets.stream()
-                .filter(budget -> Objects.equals(budget.getMonth(), getMonth(newTransaction)))
-                .findFirst();
-
-        List <Transaction> foundTransactions = category.getTransactions().stream()
-                .filter(t -> getMonth(t).equals(getMonth(newTransaction)) && t.getType() == TransactionType.EXPENSE)
-                .toList();
-
-        BigDecimal totalAmount = foundTransactions.stream().map(Transaction::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-
-        if (transactionBudget.isPresent()) {
-            Budget budget = transactionBudget.get();
-            budget.setSpentAmount(totalAmount);
-            budgetService.updateBudget(budget);
-        }
+        budgetRepository.save(budget);
 
         return newTransaction;
     }
@@ -70,13 +74,42 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction updateTransaction (Transaction transaction) {
         Transaction existingTransaction = getExistingTransaction(transaction);
 
+        boolean categoryChanged = !existingTransaction.getCategory().equals(transaction.getCategory());
+        boolean amountChanged = existingTransaction.getAmount().compareTo(transaction.getAmount()) != 0;
+        boolean dateChanged = !getMonth(existingTransaction).equals(getMonth(transaction));
+
         existingTransaction.setAmount(transaction.getAmount());
         existingTransaction.setDescription(transaction.getDescription());
         existingTransaction.setCategory(transaction.getCategory());
         existingTransaction.setDate(transaction.getDate());
         existingTransaction.setType(transaction.getType());
 
-        return transactionRepository.save(existingTransaction);
+        Transaction updatedTransaction = transactionRepository.save(existingTransaction);
+
+        if (categoryChanged || amountChanged || dateChanged) {
+            updateBudget(existingTransaction);
+            updateBudget(updatedTransaction);
+        }
+
+        return updatedTransaction;
+    }
+
+    private void updateBudget(Transaction transaction) {
+        String transactionMonth = getMonth(transaction);
+        Optional<Budget> budgetOptional = budgetRepository.findByMonthAndCategory(transactionMonth, transaction.getCategory());
+
+        if (budgetOptional.isPresent()) {
+            Budget budget = budgetOptional.get();
+            List<Transaction> transactions = transactionRepository.findAllByCategoryAndDateBetween(
+                    budget.getCategory(),
+                    YearMonth.parse(budget.getMonth()).atDay(1),
+                    YearMonth.parse(budget.getMonth()).atEndOfMonth()
+            );
+
+            budget.setTransactions(transactions);
+            budget.updateSpentAmount();
+            budgetRepository.save(budget);
+        }
     }
 
     private Transaction getExistingTransaction (Transaction transaction) {
@@ -88,6 +121,9 @@ public class TransactionServiceImpl implements TransactionService {
     public void deleteTransaction (Long id) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
+
+        updateBudget(transaction);
+
         transactionRepository.delete(transaction);
     }
 

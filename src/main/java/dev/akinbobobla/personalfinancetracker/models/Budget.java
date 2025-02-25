@@ -1,11 +1,14 @@
 package dev.akinbobobla.personalfinancetracker.models;
 
+import dev.akinbobobla.personalfinancetracker.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -37,6 +40,10 @@ public class Budget {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @OneToMany(mappedBy = "budget", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List <Transaction> transactions = new ArrayList <>();
+
     @PrePersist
     public void prePersist () {
         YearMonth yearMonth = YearMonth.parse(this.month, DateTimeFormatter.ofPattern("yyyy-MM"));
@@ -49,5 +56,12 @@ public class Budget {
 
     public void setMonth (YearMonth yearMonth) {
         this.month = yearMonth.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+    }
+
+    public void updateSpentAmount () {
+        this.spentAmount = this.transactions.stream()
+                .filter(transaction -> transaction.getType() == TransactionType.EXPENSE)
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

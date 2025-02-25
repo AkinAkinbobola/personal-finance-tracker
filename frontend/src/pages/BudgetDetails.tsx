@@ -9,14 +9,14 @@ import AddButton from "@/components/shared/AddButton.tsx";
 import {useState} from "react";
 import CreateBudgetDialog from "@/components/shared/CreateBudgetDialog.tsx";
 import {Category} from "@/types/Category.ts";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion"
 import {Progress} from "@/components/ui/progress.tsx";
 import {formatMoney} from "@/lib/utils.ts";
+import {Button} from "@/components/ui/button.tsx";
+import {Dialog, DialogContent} from "@/components/ui/dialog.tsx";
+import TransactionItem from "@/components/shared/TransactionItem.tsx";
+import CreateTransactionDialog from "@/components/shared/CreateTransactionDialog.tsx";
+import {DialogTitle} from "@radix-ui/react-dialog";
 
 
 interface BudgetDetailsParams {
@@ -25,6 +25,9 @@ interface BudgetDetailsParams {
 
 const BudgetDetails = () => {
     const [openCreateBudgetDialog, setOpenCreateBudgetDialog] = useState(false)
+    const [openBudgetTransactionsDialog, setOpenBudgetTransactionsDialog] = useState(false)
+    const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null)
+    const [openCreateTransactionForm, setOpenCreateTransactionForm] = useState(false)
 
     const params = useParams<Record<keyof BudgetDetailsParams, string>>();
 
@@ -76,8 +79,20 @@ const BudgetDetails = () => {
                                             <p>{formatMoney(budget.totalAmount)}</p>
                                         </div>
                                     </AccordionTrigger>
-                                    <AccordionContent>
-                                        <Progress value={budget.spentAmount} max={budget.totalAmount} />
+                                    <AccordionContent className={"flex flex-col gap-4"}>
+                                        <Progress value={budget.spentAmount} max={budget.totalAmount}/>
+
+                                        <div className={"flex justify-between font-bold"}>
+                                            <p>Amount spent: {formatMoney(budget.spentAmount)}</p>
+                                            <p>Budget amount: {formatMoney(budget.totalAmount)}</p>
+                                        </div>
+
+                                        <Button onClick={() => {
+                                            setSelectedBudget(budget)
+                                            setOpenBudgetTransactionsDialog(true)
+                                        }}>
+                                            View transactions
+                                        </Button>
                                     </AccordionContent>
                                 </AccordionItem>
                             </Accordion>
@@ -94,6 +109,32 @@ const BudgetDetails = () => {
                     openAddBudget={openCreateBudgetDialog}
                     setOpenAddBudget={setOpenCreateBudgetDialog}/>
             }
+
+            {
+                selectedBudget &&
+                <Dialog open={openBudgetTransactionsDialog} onOpenChange={setOpenBudgetTransactionsDialog}>
+                    <DialogContent className={"h-96 overflow-y-auto"}>
+                        <DialogTitle>
+                            Transactions for {selectedBudget.title}
+                        </DialogTitle>
+
+                        {
+                            selectedBudget.transactions.map(transaction => (
+                                    <TransactionItem transaction={transaction} key={transaction.id}/>
+                                )
+                            )
+                        }
+
+                        <Button onClick={() => setOpenCreateTransactionForm(true)}>
+                            Add transaction
+                        </Button>
+                    </DialogContent>
+                </Dialog>
+            }
+
+            <CreateTransactionDialog
+                openAddTransactionDialog={openCreateTransactionForm}
+                setOpenAddTransactionDialog={setOpenCreateTransactionForm}/>
         </main>
     );
 };
