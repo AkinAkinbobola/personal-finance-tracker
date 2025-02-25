@@ -1,21 +1,29 @@
 package dev.akinbobobla.personalfinancetracker.services.Transaction;
 
+import dev.akinbobobla.personalfinancetracker.enums.TransactionType;
 import dev.akinbobobla.personalfinancetracker.exceptions.ResourceNotFoundException;
+import dev.akinbobobla.personalfinancetracker.models.Budget;
 import dev.akinbobobla.personalfinancetracker.models.Category;
 import dev.akinbobobla.personalfinancetracker.models.Transaction;
 import dev.akinbobobla.personalfinancetracker.repositories.CategoryRepository;
 import dev.akinbobobla.personalfinancetracker.repositories.TransactionRepository;
+import dev.akinbobobla.personalfinancetracker.services.Budget.BudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
+    private final BudgetService budgetService;
 
     @Override
     public Transaction createTransaction (Transaction transaction) {
@@ -27,7 +35,35 @@ public class TransactionServiceImpl implements TransactionService {
 
         transaction.setCategory(category);
 
-        return transactionRepository.save(transaction);
+        Transaction newTransaction = transactionRepository.save(transaction);
+
+        List <Budget> budgets = budgetService.getBudgetByCategory(category).stream()
+                .filter(budget -> budget.getMonth().equals(getMonth(newTransaction))).toList();
+
+        Optional <Budget> transactionBudget = budgets.stream()
+                .filter(budget -> Objects.equals(budget.getMonth(), getMonth(newTransaction)))
+                .findFirst();
+
+        List <Transaction> foundTransactions = category.getTransactions().stream()
+                .filter(t -> getMonth(t).equals(getMonth(newTransaction)) && t.getType() == TransactionType.EXPENSE)
+                .toList();
+
+        BigDecimal totalAmount = foundTransactions.stream().map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+        if (transactionBudget.isPresent()) {
+            Budget budget = transactionBudget.get();
+            budget.setSpentAmount(totalAmount);
+            budgetService.updateBudget(budget);
+        }
+
+        return newTransaction;
+    }
+
+    private String getMonth (Transaction transaction) {
+        YearMonth yearMonth = YearMonth.from(transaction.getDate());
+        return yearMonth.toString();
     }
 
     @Override

@@ -4,6 +4,7 @@ export interface Budget {
     id: number
     title: string
     totalAmount: number
+    spentAmount: number
     month: string
     category: Category
 }

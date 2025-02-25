@@ -9,6 +9,15 @@ import AddButton from "@/components/shared/AddButton.tsx";
 import {useState} from "react";
 import CreateBudgetDialog from "@/components/shared/CreateBudgetDialog.tsx";
 import {Category} from "@/types/Category.ts";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
+import {Progress} from "@/components/ui/progress.tsx";
+import {formatMoney} from "@/lib/utils.ts";
+
 
 interface BudgetDetailsParams {
     category: string
@@ -58,7 +67,20 @@ const BudgetDetails = () => {
                 {budgets.data && budgets.data.length > 0 && budgets.data.map(budget => (
                     <Card key={budget.id}>
                         <CardContent>
-                            <div>{budget.title}</div>
+                            <Accordion type="single" collapsible>
+                                <AccordionItem value={budget.title}>
+                                    <AccordionTrigger className={"hover:no-underline"}>
+                                        <div className={"flex justify-between items-center w-full"}>
+                                            <h1>{budget.title}</h1>
+
+                                            <p>{formatMoney(budget.totalAmount)}</p>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        <Progress max={budget.totalAmount} value={budget.spentAmount} />
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
                         </CardContent>
                     </Card>
                 ))}

@@ -9,4 +9,6 @@ public interface BudgetService {
     Budget createBudget(Budget budget);
 
     List<Budget> getBudgetByCategory(Category category);
+
+    Budget updateBudget (Budget budget);
 }
