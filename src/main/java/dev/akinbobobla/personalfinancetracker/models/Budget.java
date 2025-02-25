@@ -27,6 +27,12 @@ public class Budget {
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
 
+    @Column(name = "spent_amount", nullable = false)
+    private BigDecimal spentAmount;
+
+    @Column(name = "remaining_amount", nullable = false)
+    private BigDecimal remainingAmount;
+
     @Column(name = "month", nullable = false)
     private String month;
 

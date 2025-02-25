@@ -30,6 +30,7 @@ const TransactionForm = ({form, onSubmit}: TransactionFormProps) => {
     })
 
     return (
+        categories.data &&
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-4"}>
                 <FormField
