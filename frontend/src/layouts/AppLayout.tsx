@@ -4,6 +4,7 @@ import {Outlet} from "react-router";
 import {Toaster} from "@/components/ui/sonner.tsx";
 import {ThemeProvider} from "@/components/shared/ThemeProvider.tsx";
 import {ModeToggle} from "@/components/shared/ModeToggle.tsx";
+import ErrorBoundary from "@/pages/ErrorBoundary.tsx";
 
 const AppLayout = () => {
     return (
@@ -21,7 +22,9 @@ const AppLayout = () => {
 
 
                     <main className={"w-full h-full"}>
-                        <Outlet/>
+                        <ErrorBoundary>
+                            <Outlet/>
+                        </ErrorBoundary>
                     </main>
                 </main>
 

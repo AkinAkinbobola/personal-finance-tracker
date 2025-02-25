@@ -53,7 +53,7 @@ if ($env:MVNW_VERBOSE -eq "true") {
 # calculate distributionUrl, requires .mvn/wrapper/maven-wrapper.properties
 $distributionUrl = (Get-Content -Raw "$scriptDir/.mvn/wrapper/maven-wrapper.properties" | ConvertFrom-StringData).distributionUrl
 if (!$distributionUrl) {
-  Write-Error "cannot read distributionUrl property in $scriptDir/.mvn/wrapper/maven-wrapper.properties"
+  Write-ErrorBoundary "cannot read distributionUrl property in $scriptDir/.mvn/wrapper/maven-wrapper.properties"
 }
 
 switch -wildcard -casesensitive ( $($distributionUrl -replace '^.*/','') ) {
@@ -92,7 +92,7 @@ if (Test-Path -Path "$MAVEN_HOME" -PathType Container) {
 }
 
 if (! $distributionUrlNameMain -or ($distributionUrlName -eq $distributionUrlNameMain)) {
-  Write-Error "distributionUrl is not valid, must end with *-bin.zip, but found $distributionUrl"
+  Write-ErrorBoundary "distributionUrl is not valid, must end with *-bin.zip, but found $distributionUrl"
 }
 
 # prepare tmp dir
@@ -124,11 +124,11 @@ $webclient.DownloadFile($distributionUrl, "$TMP_DOWNLOAD_DIR/$distributionUrlNam
 $distributionSha256Sum = (Get-Content -Raw "$scriptDir/.mvn/wrapper/maven-wrapper.properties" | ConvertFrom-StringData).distributionSha256Sum
 if ($distributionSha256Sum) {
   if ($USE_MVND) {
-    Write-Error "Checksum validation is not supported for maven-mvnd. `nPlease disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties."
+    Write-ErrorBoundary "Checksum validation is not supported for maven-mvnd. `nPlease disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties."
   }
   Import-Module $PSHOME\Modules\Microsoft.PowerShell.Utility -Function Get-FileHash
   if ((Get-FileHash "$TMP_DOWNLOAD_DIR/$distributionUrlName" -Algorithm SHA256).Hash.ToLower() -ne $distributionSha256Sum) {
-    Write-Error "Error: Failed to validate Maven distribution SHA-256, your Maven distribution might be compromised. If you updated your Maven version, you need to update the specified distributionSha256Sum property."
+    Write-ErrorBoundary "ErrorBoundary: Failed to validate Maven distribution SHA-256, your Maven distribution might be compromised. If you updated your Maven version, you need to update the specified distributionSha256Sum property."
   }
 }
 
@@ -139,7 +139,7 @@ try {
   Move-Item -Path "$TMP_DOWNLOAD_DIR/$MAVEN_HOME_NAME" -Destination $MAVEN_HOME_PARENT | Out-Null
 } catch {
   if (! (Test-Path -Path "$MAVEN_HOME" -PathType Container)) {
-    Write-Error "fail to move MAVEN_HOME"
+    Write-ErrorBoundary "fail to move MAVEN_HOME"
   }
 } finally {
   try { Remove-Item $TMP_DOWNLOAD_DIR -Recurse -Force | Out-Null }
