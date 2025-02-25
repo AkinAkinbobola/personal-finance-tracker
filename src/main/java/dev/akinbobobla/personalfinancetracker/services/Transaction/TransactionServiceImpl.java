@@ -1,5 +1,6 @@
 package dev.akinbobobla.personalfinancetracker.services.Transaction;
 
+import dev.akinbobobla.personalfinancetracker.enums.TransactionType;
 import dev.akinbobobla.personalfinancetracker.exceptions.ResourceNotFoundException;
 import dev.akinbobobla.personalfinancetracker.models.Budget;
 import dev.akinbobobla.personalfinancetracker.models.Category;
@@ -122,9 +123,15 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 
-        updateBudget(transaction);
+        Budget budget = transaction.getBudget();
 
         transactionRepository.delete(transaction);
+
+        if (budget != null) {
+            budget.getTransactions().remove(transaction);
+            budget.updateSpentAmount();
+            budgetRepository.save(budget);
+        }
     }
 
     @Override

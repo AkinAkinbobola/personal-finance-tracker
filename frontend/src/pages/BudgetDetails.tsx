@@ -113,7 +113,7 @@ const BudgetDetails = () => {
             {
                 selectedBudget &&
                 <Dialog open={openBudgetTransactionsDialog} onOpenChange={setOpenBudgetTransactionsDialog}>
-                    <DialogContent className={"h-96 overflow-y-auto"}>
+                    <DialogContent className={"overflow-y-auto"}>
                         <DialogTitle>
                             Transactions for {selectedBudget.title}
                         </DialogTitle>
