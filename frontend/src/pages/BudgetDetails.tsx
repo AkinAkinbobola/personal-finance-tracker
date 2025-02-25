@@ -70,14 +70,14 @@ const BudgetDetails = () => {
                             <Accordion type="single" collapsible>
                                 <AccordionItem value={budget.title}>
                                     <AccordionTrigger className={"hover:no-underline"}>
-                                        <div className={"flex justify-between items-center w-full"}>
+                                        <div className={"flex justify-between items-center w-full text-xl"}>
                                             <h1>{budget.title}</h1>
 
                                             <p>{formatMoney(budget.totalAmount)}</p>
                                         </div>
                                     </AccordionTrigger>
                                     <AccordionContent>
-                                        <Progress max={budget.totalAmount} value={budget.spentAmount} />
+                                        <Progress value={budget.spentAmount} max={budget.totalAmount} />
                                     </AccordionContent>
                                 </AccordionItem>
                             </Accordion>
