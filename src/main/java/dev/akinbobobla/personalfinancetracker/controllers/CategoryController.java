@@ -42,4 +42,13 @@ public class CategoryController {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
     }
+
+    @GetMapping("/{name}")
+    public ResponseEntity<?> getCategoryByName(@PathVariable String name){
+        try {
+            return ResponseEntity.ok(categoryService.getCategoryByName(name));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
 }

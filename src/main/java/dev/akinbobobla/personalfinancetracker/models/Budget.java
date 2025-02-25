@@ -28,10 +28,7 @@ public class Budget {
     private BigDecimal totalAmount;
 
     @Column(name = "spent_amount", nullable = false)
-    private BigDecimal spentAmount;
-
-    @Column(name = "remaining_amount", nullable = false)
-    private BigDecimal remainingAmount;
+    private BigDecimal spentAmount = BigDecimal.ZERO;
 
     @Column(name = "month", nullable = false)
     private String month;
@@ -44,6 +41,10 @@ public class Budget {
     public void prePersist () {
         YearMonth yearMonth = YearMonth.parse(this.month, DateTimeFormatter.ofPattern("yyyy-MM"));
         this.title = yearMonth.getMonth().name() + " " + yearMonth.getYear();
+
+        if (this.spentAmount == null) {
+            this.spentAmount = BigDecimal.ZERO;
+        }
     }
 
     public void setMonth (YearMonth yearMonth) {

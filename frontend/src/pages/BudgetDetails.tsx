@@ -5,12 +5,18 @@ import Loading from "@/components/shared/Loading.tsx";
 import {Budget} from "@/types/Budget.ts";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import NoData from "@/components/shared/NoData.tsx";
+import AddButton from "@/components/shared/AddButton.tsx";
+import {useState} from "react";
+import CreateBudgetDialog from "@/components/shared/CreateBudgetDialog.tsx";
+import {Category} from "@/types/Category.ts";
 
 interface BudgetDetailsParams {
     category: string
 }
 
 const BudgetDetails = () => {
+    const [openCreateBudgetDialog, setOpenCreateBudgetDialog] = useState(false)
+
     const params = useParams<Record<keyof BudgetDetailsParams, string>>();
 
     const budgets = useQuery({
@@ -21,12 +27,24 @@ const BudgetDetails = () => {
         }
     })
 
+    const category = useQuery({
+        queryKey: ["category", params.category],
+        queryFn: async () => {
+            const response = await axiosInstance.get<Category>(`/categories/${params.category}`);
+            return response.data;
+        }
+    });
+
+    if (budgets.isLoading) {
+        return <Loading/>
+    }
+
+    if (budgets.isError) {
+        throw new Error("Error fetching budgets")
+    }
+
     return (
-        <main className={"px-2 py-2 md:py-4 sm:px-6 lg:px-8 h-full"}>
-            {budgets.isLoading && <Loading/>}
-
-            {budgets.isError && <p>Error</p>}
-
+        <main className={"px-2 py-2 md:py-4 sm:px-6 lg:px-8 h-full relative"}>
             {
                 budgets.data && budgets.data.length === 0 && (
                     <NoData>
@@ -37,7 +55,7 @@ const BudgetDetails = () => {
             }
 
             <div className={"space-y-4"}>
-                {budgets.data && budgets.data.length > 0  && budgets.data.map(budget => (
+                {budgets.data && budgets.data.length > 0 && budgets.data.map(budget => (
                     <Card key={budget.id}>
                         <CardContent>
                             <div>{budget.title}</div>
@@ -45,6 +63,15 @@ const BudgetDetails = () => {
                     </Card>
                 ))}
             </div>
+
+            <AddButton onClick={() => setOpenCreateBudgetDialog(true)}/>
+
+            {
+                category.data && <CreateBudgetDialog
+                    category={category.data}
+                    openAddBudget={openCreateBudgetDialog}
+                    setOpenAddBudget={setOpenCreateBudgetDialog}/>
+            }
         </main>
     );
 };

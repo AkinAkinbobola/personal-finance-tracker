@@ -4,8 +4,7 @@ import {Button} from "@/components/ui/button.tsx";
 import {Category} from "@/types/Category";
 import {NavLink} from "react-router";
 import {useState} from "react";
-import {Dialog, DialogContent, DialogTitle} from "@/components/ui/dialog.tsx";
-import CreateBudgetForm from "@/components/shared/CreateBudgetForm.tsx";
+import CreateBudgetDialog from "@/components/shared/CreateBudgetDialog.tsx";
 
 interface CategoryItemProps {
     category: Category
@@ -29,13 +28,10 @@ const CategoryItem = ({category}: CategoryItemProps) => {
                     </Button>
                 </div>
 
-                <Dialog open={openAddBudget} onOpenChange={setOpenAddBudget}>
-                    <DialogContent>
-                        <DialogTitle>Create Budget</DialogTitle>
-
-                        <CreateBudgetForm category={category} closeDialog={() => setOpenAddBudget(false)}/>
-                    </DialogContent>
-                </Dialog>
+                <CreateBudgetDialog
+                    category={category}
+                    openAddBudget={openAddBudget}
+                    setOpenAddBudget={setOpenAddBudget}/>
             </CardContent>
         </Card>
     );
