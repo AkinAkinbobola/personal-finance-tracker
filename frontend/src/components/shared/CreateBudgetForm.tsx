@@ -21,61 +21,26 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-const convertDate = (date: Date) => {
+const convertDate = (date: number) => {
     return format(date, "yyyy-MM")
 }
 
-const months = [
-    {
-        name: "January",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 1)))
-    }, {
-        name: "February",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 2)))
-    }, {
-        name: "March",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 3)))
-    }, {
-        name: "April",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 4)))
-    }, {
-        name: "May",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 5)))
-    }, {
-        name: "June",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 6)))
-    }, {
-        name: "July",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 7)))
-    }, {
-        name: "August",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 8)))
-    }, {
-        name: "September",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 9)))
-    }, {
-        name: "October",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 10)))
-    }, {
-        name: "November",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 11)))
-    }, {
-        name: "December",
-        year: convertDate(new Date(new Date().setFullYear(new Date().getFullYear(), 12)))
-    },
-]
+const months = Array.from({length: 12}, (_, i) => ({
+    name: format(new Date().setMonth(i), "MMMM"),
+    year: convertDate(new Date().setMonth(i))
+}))
 
 interface AddBudgetFormProps {
     category: Category,
     closeDialog: () => void
 }
 
-const AddBudgetForm = ({category, closeDialog}: AddBudgetFormProps) => {
+const CreateBudgetForm = ({category, closeDialog}: AddBudgetFormProps) => {
         const form = useForm<FormValues>({
             resolver: zodResolver(formSchema),
             defaultValues: {
                 totalAmount: 1,
-                month: convertDate(new Date()),
+                month: "",
             }
         })
 
@@ -136,7 +101,7 @@ const AddBudgetForm = ({category, closeDialog}: AddBudgetFormProps) => {
                                             <SelectValue placeholder={"Select Month"}/>
                                         </SelectTrigger>
 
-                                        <SelectContent className={"max-h-48 overflow-y-auto"}>
+                                        <SelectContent className={"w-1/2 h-64 overflow-y-auto"}>
                                             {
                                                 months.map(month => (
                                                     <SelectItem value={month.year} key={month.name}>
@@ -162,4 +127,4 @@ const AddBudgetForm = ({category, closeDialog}: AddBudgetFormProps) => {
     }
 ;
 
-export default AddBudgetForm;
+export default CreateBudgetForm;
