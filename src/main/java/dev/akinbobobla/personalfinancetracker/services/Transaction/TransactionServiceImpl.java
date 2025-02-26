@@ -1,6 +1,5 @@
 package dev.akinbobobla.personalfinancetracker.services.Transaction;
 
-import dev.akinbobobla.personalfinancetracker.enums.TransactionType;
 import dev.akinbobobla.personalfinancetracker.exceptions.ResourceNotFoundException;
 import dev.akinbobobla.personalfinancetracker.models.Budget;
 import dev.akinbobobla.personalfinancetracker.models.Category;
