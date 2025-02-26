@@ -29,8 +29,9 @@ const EditTransactionForm = ({transaction, closeDialog}: EditTransactionFormProp
         mutationFn: async (values: FormValues) => {
             await axiosInstance.put(`/transactions/${transaction.id}`, values)
         },
-        onSuccess: () => {
+        onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({queryKey: ["transactions"]})
+            queryClient.invalidateQueries({queryKey: ["budgets", variables.category]})
             toast.success('Transaction edited successfully')
         },
         onError: error => {
@@ -43,7 +44,7 @@ const EditTransactionForm = ({transaction, closeDialog}: EditTransactionFormProp
         defaultValues: {
             amount: transaction.amount,
             description: transaction.description,
-            category: transaction.category,
+            category: transaction.category.name,
             date: new Date(transaction.date),
             type: transaction.type,
         }

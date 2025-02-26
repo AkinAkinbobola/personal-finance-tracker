@@ -6,7 +6,7 @@ import {Budget} from "@/types/Budget.ts";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import NoData from "@/components/shared/NoData.tsx";
 import AddButton from "@/components/shared/AddButton.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import CreateBudgetDialog from "@/components/shared/CreateBudgetDialog.tsx";
 import {Category} from "@/types/Category.ts";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion"
@@ -38,6 +38,13 @@ const BudgetDetails = () => {
             return response.data;
         }
     })
+
+    useEffect(() => {
+        if (selectedBudget && budgets.data) {
+            const updatedBudget = budgets.data.find(b => b.id === selectedBudget.id);
+            setSelectedBudget(updatedBudget || null);
+        }
+    }, [budgets.data]);
 
     const category = useQuery({
         queryKey: ["category", params.category],

@@ -21,11 +21,12 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
     const queryClient = useQueryClient()
 
     const deleteTransactionMutation = useMutation({
-        mutationFn: async (id: number) => {
-            await axiosInstance.delete(`/transactions/${id}`)
+        mutationFn: async (transaction: Transaction) => {
+            await axiosInstance.delete(`/transactions/${transaction.id}`)
         },
-        onSuccess: () => {
+        onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({queryKey: ["transactions"]})
+            queryClient.invalidateQueries({queryKey: ["budgets", variables.category.name]})
         }
     })
 
@@ -59,7 +60,7 @@ const TransactionItem = ({transaction}: TransactionItemProps) => {
                     </Button>
 
                     <Button size={"icon"} variant={"destructive"}
-                            onClick={() => deleteTransactionMutation.mutate(transaction.id)}
+                            onClick={() => deleteTransactionMutation.mutate(transaction)}
                             className={"cursor-pointer"}>
                         <Trash2/>
                     </Button>

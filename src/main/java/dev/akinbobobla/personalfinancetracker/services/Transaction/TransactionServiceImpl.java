@@ -81,7 +81,11 @@ public class TransactionServiceImpl implements TransactionService {
 
         existingTransaction.setAmount(transaction.getAmount());
         existingTransaction.setDescription(transaction.getDescription());
-        existingTransaction.setCategory(transaction.getCategory());
+
+        Category category = categoryRepository.findByName(transaction.getCategory().getName())
+                .orElseGet(() -> categoryRepository.save(transaction.getCategory()));
+
+        existingTransaction.setCategory(category);
         existingTransaction.setDate(transaction.getDate());
         existingTransaction.setType(transaction.getType());
 
