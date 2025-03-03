@@ -49,34 +49,34 @@ const IncomeExpenseReport = () => {
 
     return (
         <Card>
-            <CardHeader>
+            <CardHeader className={"space-y-2"}>
                 <CardTitle>Income VS. Expenses</CardTitle>
-                <CardDescription>{date?.from && date?.to && `${format(date.from, "PPP")} - ${format(date.to, "PPP")}`}</CardDescription>
-
-                <Popover>
-                    <PopoverTrigger asChild className={"w-full"}>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                                "pl-3 text-left font-normal",
-                                !date?.from && !date?.to && "text-muted-foreground"
-                            )}
-                        >
-                            {date?.from && date?.to
-                                ? `${format(date.from, "PPP")} - ${format(date.to, "PPP")}`
-                                : "Pick a date range"}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0" align="start">
-                        <Calendar
-                            mode="range"
-                            selected={date}
-                            onSelect={setDate}
-                            initialFocus
-                        />
-                    </PopoverContent>
-                </Popover>
+                <CardDescription>
+                    <Popover>
+                        <PopoverTrigger asChild className={"w-full"}>
+                            <Button
+                                variant={"outline"}
+                                className={cn(
+                                    "pl-3 text-left font-normal",
+                                    !date?.from && !date?.to && "text-muted-foreground"
+                                )}
+                            >
+                                {date?.from && date?.to
+                                    ? `${format(date.from, "PPP")} - ${format(date.to, "PPP")}`
+                                    : "Pick a date range"}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0" align="start">
+                            <Calendar
+                                mode="range"
+                                selected={date}
+                                onSelect={setDate}
+                                initialFocus
+                            />
+                        </PopoverContent>
+                    </Popover>
+                </CardDescription>
             </CardHeader>
 
             <CardContent>
