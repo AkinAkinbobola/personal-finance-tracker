@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.YearMonth;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,6 +37,15 @@ public class ReportController {
     public ResponseEntity <?> incomeExpense (@RequestParam String startDate, @RequestParam String endDate) {
         try {
             return ResponseEntity.ok(reportsService.generateIncomeExpenseReport(startDate, endDate));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity <?> getReport (@RequestParam(required = false, defaultValue = "all") List <String> categories, @RequestParam String startDate, @RequestParam String endDate) {
+        try {
+            return ResponseEntity.ok(reportsService.generateReport(categories, startDate, endDate));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }

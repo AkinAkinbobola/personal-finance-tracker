@@ -2,6 +2,7 @@ package dev.akinbobobla.personalfinancetracker.services.Reports;
 
 import dev.akinbobobla.personalfinancetracker.dtos.IncomeExpenseDto;
 import dev.akinbobobla.personalfinancetracker.dtos.MonthlySpendingReportDto;
+import dev.akinbobobla.personalfinancetracker.dtos.ReportDto;
 import dev.akinbobobla.personalfinancetracker.enums.TransactionType;
 import dev.akinbobobla.personalfinancetracker.models.Transaction;
 import dev.akinbobobla.personalfinancetracker.repositories.CategoryRepository;
@@ -72,5 +73,10 @@ public class ReportsServiceImpl implements ReportsService {
         return groupedData.values().stream()
                 .sorted(Comparator.comparing(IncomeExpenseDto::date))
                 .toList();
+    }
+
+    @Override
+    public List<ReportDto> generateReport (List <String> categories, String startDate, String endDate) {
+        return null;
     }
 }
