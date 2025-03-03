@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 
 @RestController
@@ -27,6 +28,15 @@ public class ReportController {
             }
 
             return ResponseEntity.ok(reportsService.generateMonthlySpendingReport(month));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/income-expense")
+    public ResponseEntity <?> incomeExpense (@RequestParam String startDate, @RequestParam String endDate) {
+        try {
+            return ResponseEntity.ok(reportsService.generateIncomeExpenseReport(startDate, endDate));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
