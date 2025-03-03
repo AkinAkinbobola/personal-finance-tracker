@@ -25,3 +25,7 @@ export function getRandomColor() {
     }
     return color;
 }
+
+export const toLocalDate = (date: Date) => {
+    return date.toISOString().split("T")[0];
+}

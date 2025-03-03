@@ -3,7 +3,7 @@ import {useState} from "react";
 import {DateRange} from "react-day-picker";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {cn} from "@/lib/utils.ts";
+import {cn, toLocalDate} from "@/lib/utils.ts";
 import {format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
@@ -12,11 +12,6 @@ import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {IncomeExpense} from "@/types/IncomeExpense.ts";
 import {CartesianGrid, Line, LineChart, XAxis} from "recharts"
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/components/ui/chart"
-
-const toLocalDate = (date: Date) => {
-    console.log(date.toISOString().split("T")[0]);
-    return date.toISOString().split("T")[0];
-}
 
 const IncomeExpenseReport = () => {
     const [date, setDate] = useState<DateRange | undefined>(undefined);
