@@ -4,6 +4,8 @@ import dev.akinbobobla.personalfinancetracker.dtos.IncomeExpenseDto;
 import dev.akinbobobla.personalfinancetracker.dtos.MonthlySpendingReportDto;
 import dev.akinbobobla.personalfinancetracker.dtos.ReportDto;
 import dev.akinbobobla.personalfinancetracker.enums.TransactionType;
+import dev.akinbobobla.personalfinancetracker.exceptions.ResourceNotFoundException;
+import dev.akinbobobla.personalfinancetracker.models.Category;
 import dev.akinbobobla.personalfinancetracker.models.Transaction;
 import dev.akinbobobla.personalfinancetracker.repositories.CategoryRepository;
 import dev.akinbobobla.personalfinancetracker.repositories.TransactionRepository;
@@ -14,9 +16,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,7 +76,32 @@ public class ReportsServiceImpl implements ReportsService {
     }
 
     @Override
-    public List<ReportDto> generateReport (List <String> categories, String startDate, String endDate) {
-        return null;
+    public List <ReportDto> generateReport (List <String> categories, String startDate, String endDate) {
+        List <Category> categoryList;
+
+        if (Objects.equals(categories, List.of("all"))) {
+            categoryList = categoryRepository.findAll();
+        } else {
+            categoryList = categories.stream().map(s -> categoryRepository.findByName(s.toLowerCase())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found"))).toList();
+        }
+
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
+
+        List <Transaction> transactions = transactionRepository.findByDateBetween(start, end, Sort.by(Sort.Direction.ASC, "date"));
+
+        List <Category> finalCategoryList = categoryList;
+
+        List <Transaction> filteredTransactions = transactions.stream()
+                .filter(transaction -> finalCategoryList.contains(transaction.getCategory()))
+                .toList();
+
+        return filteredTransactions.stream().map(transaction -> new ReportDto(
+                transaction.getDate(),
+                transaction.getAmount(),
+                transaction.getType().name(),
+                transaction.getCategory().getName()
+        )).toList();
     }
 }
