@@ -1,62 +1,80 @@
-import {useQuery} from "@tanstack/react-query";
-import {axiosInstance} from "@/axios/axiosInstance.ts";
-import {capitalize, getRandomColor} from "@/lib/utils.ts";
-import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "@/components/ui/chart.tsx";
-import {LabelList, Pie, PieChart} from "recharts";
 import {MonthlySpending} from "@/types/MonthlySpending.ts";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {useEffect, useState} from "react";
 
-const MonthlySpendingReport = () => {
-    const spending = useQuery({
-        queryKey: ["spending", "2025-02"],
-        queryFn: async () => {
-            const response = await axiosInstance.get<MonthlySpending[]>("reports/spending", {
-                params: {
-                    month: "2025-02",
-                }
-            });
-            return response.data;
-        }
-    })
 
-    const spendingData = spending.data && spending.data.map((item) => ({
-        ...item,
-        fill: getRandomColor()
-    }));
+interface MonthlySpendingReportProps {
+    monthlySpendingMonth: String | undefined;
+    setMonthlySpendingMonth: (month: String | undefined) => void;
+    monthlySpendingData: MonthlySpending[]
+}
 
-    const chartConfig = spending.data && spending.data.reduce((config, item, _index) => {
-        config[item.categoryName.toLowerCase()] = {
-            label: capitalize(item.categoryName),
-        };
-        return config;
-    }, {} as ChartConfig) || {};
-    return (
-        <main className={"px-2 py-2 md:py-4 sm:px-6 lg:px-8 h-full"}>
-            {
-                spending.data &&
-                <ChartContainer config={chartConfig}
-                                className="mx-auto aspect-square max-h-[500px] [&_.recharts-text]:fill-background"
-                >
-                    <PieChart>
-                        <ChartTooltip
-                            content={<ChartTooltipContent nameKey={"categoryName"}/>}/>
+const months = Array.from({length: 12}).map((_, i) => ({
+    value: String(i + 1),
+    label: new Date(0, i).toLocaleString("en", {month: "long"})
+}));
 
-                        <Pie dataKey={"totalSpent"} data={spendingData} nameKey={"categoryName"}>
-                            <LabelList
-                                dataKey={"categoryName"}
-                                className={"fill-background"}
-                                stroke={"none"}
-                                fontSize={12}
-                                formatter={(value: keyof typeof chartConfig) =>
-                                    chartConfig[value]?.label
-                                }
-                            />
+const years = Array.from(
+    {length: new Date().getFullYear() - 2010 + 1},
+    (_, i) => {
+        const year = new Date().getFullYear() - i;
+        return {value: String(year), label: String(year)};
+    }
+);
 
-                        </Pie>
-                    </PieChart>
-                </ChartContainer>
+const MonthlySpendingReport =
+    ({
+         setMonthlySpendingMonth,
+         monthlySpendingMonth,
+         monthlySpendingData
+     }: MonthlySpendingReportProps) => {
+        const [selectedMonth, setSelectedMonth] = useState<String | undefined>(undefined)
+        const [selectedYear, setSelectedYear] = useState<String | undefined>(undefined)
+
+        useEffect(() => {
+            if (selectedMonth && selectedYear){
+                setMonthlySpendingMonth(`${selectedYear}-${selectedMonth}`)
             }
-        </main>
-    );
-};
+        }, [selectedMonth, selectedYear]);
+
+
+        return (
+            <div className={"w-1/2"}>
+                <div className={"flex items-center justify-between"}>
+                    <Select onValueChange={setSelectedMonth}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Month"/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {
+                                months.map(month => (
+                                    <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>
+                                ))
+                            }
+                        </SelectContent>
+                    </Select>
+
+                    <Select onValueChange={setSelectedYear}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Year"/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {
+                                years.map(year => (
+                                    <SelectItem key={year.value} value={year.value}>{year.label}</SelectItem>
+                                ))
+                            }
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+        );
+    };
 
 export default MonthlySpendingReport;
