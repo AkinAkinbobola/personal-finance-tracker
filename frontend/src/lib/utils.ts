@@ -30,3 +30,14 @@ export function getRandomColor() {
 export const toLocalDate = (date: Date) => {
     return format(date, "yyyy-MM-dd");
 }
+
+export const downloadFile = (response: any, filename: string) => {
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${filename}.csv`;
+    document.body.appendChild(link)
+    link.click();
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+}

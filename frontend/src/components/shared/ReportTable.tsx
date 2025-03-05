@@ -3,7 +3,7 @@ import {useMutation, useQuery} from "@tanstack/react-query";
 import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {Category} from "@/types/Category.ts";
 import MultipleSelector, {Option} from "@/components/ui/multi-select.tsx";
-import {capitalize, cn, formatMoney, toLocalDate} from "@/lib/utils.ts";
+import {capitalize, cn, downloadFile, formatMoney, toLocalDate} from "@/lib/utils.ts";
 import {useState} from "react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {Button} from "@/components/ui/button.tsx";
@@ -88,14 +88,7 @@ const ReportTable = () => {
             const response = await axiosInstance.post("/reports/export", report.data, {
                 responseType: "blob"
             })
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `Report ${toLocalDate(date.from)} to ${toLocalDate(date.to)}.csv`;
-            document.body.appendChild(link)
-            link.click();
-            document.body.removeChild(link)
-            window.URL.revokeObjectURL(url)
+            downloadFile(response, `Report ${toLocalDate(date.from)} to ${toLocalDate(date.to)}`)
         }
     })
 

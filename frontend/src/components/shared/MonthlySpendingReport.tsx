@@ -1,16 +1,13 @@
 import {MonthlySpending} from "@/types/MonthlySpending.ts";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select"
 import {useEffect, useState} from "react";
 import {ColumnDef} from "@tanstack/react-table";
 import {DataTable} from "@/components/shared/DataTable.tsx";
-import {capitalize, formatMoney} from "@/lib/utils.ts";
+import {capitalize, downloadFile, formatMoney} from "@/lib/utils.ts";
 import {format} from "date-fns";
+import {useMutation} from "@tanstack/react-query";
+import {axiosInstance} from "@/axios/axiosInstance.ts";
+import {Button} from "@/components/ui/button.tsx";
 
 
 interface MonthlySpendingReportProps {
@@ -41,6 +38,18 @@ const MonthlySpendingReport =
         const [selectedMonth, setSelectedMonth] = useState<String | undefined>(undefined)
         const [selectedYear, setSelectedYear] = useState<String | undefined>(undefined)
 
+        const exportFile = useMutation({
+            mutationFn: async () => {
+                const response = await axiosInstance.get("/reports/monthly-spending-csv", {
+                    params: {
+                        month: monthlySpendingMonth
+                    },
+                    responseType: "blob"
+                })
+                downloadFile(response, `monthly-spending-${monthlySpendingMonth}`)
+            }
+        })
+
         const columns: ColumnDef<MonthlySpending>[] = [
             {
                 accessorKey: "categoryName",
@@ -51,7 +60,7 @@ const MonthlySpendingReport =
             },
             {
                 accessorKey: "totalSpent",
-                header: `Amount Spent (${format(new Date(monthlySpendingMonth as string), "MMMM yyyy")})`,
+                header: `Amount Spent${monthlySpendingMonth ? ` (${format(new Date(monthlySpendingMonth as string), "MMMM yyyy")})` : ""}`,
                 cell: ({row}) => {
                     return <div>{formatMoney(row.getValue("totalSpent"))}</div>
                 }
@@ -102,6 +111,10 @@ const MonthlySpendingReport =
                     columns={columns}
                     data={monthlySpendingData}
                 />
+
+                <Button onClick={() => exportFile.mutate()} disabled={monthlySpendingData.length === 0}>
+                    Export
+                </Button>
             </div>
         );
     };

@@ -131,7 +131,7 @@ public class ReportsServiceImpl implements ReportsService {
         csvContent.append(header);
 
         for (MonthlySpendingReportDto reportDto : monthlySpendingReport) {
-            csvContent.append(reportDto.categoryName()).append(",");
+            csvContent.append(StringUtils.capitalize(reportDto.categoryName())).append(",");
             csvContent.append(reportDto.totalSpent()).append("\n");
         }
 
