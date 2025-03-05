@@ -9,11 +9,9 @@ import java.util.List;
 public interface ReportsService {
     List <MonthlySpendingReportDto> generateMonthlySpendingReport (String month);
 
-    List<IncomeExpenseDto> generateIncomeExpenseReport (String startDate, String endDate);
-
-    List<ReportDto> generateReport (List <String> categories, String startDate, String endDate);
-
-    String generateCsvReport (List <ReportDto> reportDtoList);
-
     String generateMonthlySpendingReportCsv (String month);
+
+    List <IncomeExpenseDto> generateIncomeExpenseReport (String startDate, String endDate);
+
+    String generateIncomeExpenseReportCsv (String startDate, String endDate);
 }

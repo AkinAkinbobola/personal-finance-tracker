@@ -1,114 +1,111 @@
 import {Calendar} from "@/components/ui/calendar.tsx";
-import {useState} from "react";
 import {DateRange} from "react-day-picker";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {cn, toLocalDate} from "@/lib/utils.ts";
+import {cn, downloadFile, formatMoney, toLocalDate} from "@/lib/utils.ts";
 import {format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {useQuery} from "@tanstack/react-query";
-import {axiosInstance} from "@/axios/axiosInstance.ts";
+import {CardContent} from "@/components/ui/card.tsx";
 import {IncomeExpense} from "@/types/IncomeExpense.ts";
-import {CartesianGrid, Line, LineChart, XAxis} from "recharts"
-import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/components/ui/chart"
+import {ColumnDef} from "@tanstack/react-table";
+import {DataTable} from "@/components/shared/DataTable.tsx";
+import {useMutation} from "@tanstack/react-query";
+import {axiosInstance} from "@/axios/axiosInstance.ts";
 
-const IncomeExpenseReport = () => {
-    const [date, setDate] = useState<DateRange | undefined>(undefined);
+interface IncomeExpenseReportProps {
+    setIncomeExpenseDateRange: (dateRange: DateRange | undefined) => void
+    incomeExpenseDateRange: DateRange | undefined
+    incomeExpenseData: IncomeExpense[]
+}
 
-    const incomeExpenses = useQuery({
-        queryKey: ["income-expenses", date?.from, date?.to],
-        queryFn: async () => {
-            if (!date?.from || !date?.to) return [];
-            const response = await axiosInstance.get<IncomeExpense[]>("/reports/income-expense", {
-                params: {
-                    startDate: date?.from && toLocalDate(date.from),
-                    endDate: date?.to && toLocalDate(date.to),
+const IncomeExpenseReport =
+    (
+        {
+            setIncomeExpenseDateRange,
+            incomeExpenseDateRange,
+            incomeExpenseData
+        }: IncomeExpenseReportProps
+    ) => {
+
+        const exportFile = useMutation({
+            mutationFn: async () => {
+                if (!incomeExpenseDateRange?.from || !incomeExpenseDateRange?.to) {
+                    return;
                 }
-            })
-            return response.data;
-        },
-        enabled: !!date?.from && !!date?.to,
-    })
 
-    const chartConfig = {
-        income: {
-            label: "Income",
-            color: "var(--color-chart-1)",
-        },
-        expenses: {
-            label: "Expenses",
-            color: "var(--color-chart-2)",
-        }
-    } satisfies ChartConfig
+                const response = await axiosInstance.get("/reports/income-expense-csv", {
+                    params: {
+                        startDate: toLocalDate(incomeExpenseDateRange.from),
+                        endDate: toLocalDate(incomeExpenseDateRange.to)
+                    },
+                    responseType: "blob"
+                })
 
-    return (
-        <Card>
-            <CardHeader className={"space-y-2"}>
-                <CardTitle>Income VS. Expenses</CardTitle>
-                <CardDescription>
-                    <Popover>
-                        <PopoverTrigger asChild className={"w-full"}>
+                downloadFile(response, "income-expense")
+            }
+        })
+
+        const columns: ColumnDef<IncomeExpense> [] = [
+            {
+                accessorKey: "date",
+                header: "Date",
+                cell: ({row}) => {
+                    return <div>{format(row.getValue("date"), "MMM dd yyyy")}</div>
+                }
+            },
+            {
+                accessorKey: "income",
+                header: "Income",
+                cell: ({row}) => {
+                    return <div>{formatMoney(row.getValue("income"))}</div>
+                }
+            },
+            {
+                accessorKey: "expenses",
+                header: "Expense",
+                cell: ({row}) => {
+                    return <div>{formatMoney(row.getValue("expenses"))}</div>
+                }
+            }
+        ]
+
+        return (
+            <CardContent className={"space-y-4"}>
+                <Popover>
+                    <div className={"flex justify-end"}>
+                        <PopoverTrigger asChild className={"w-fit"}>
                             <Button
                                 variant={"outline"}
                                 className={cn(
                                     "pl-3 text-left font-normal",
-                                    !date?.from && !date?.to && "text-muted-foreground"
+                                    !incomeExpenseDateRange?.from && !incomeExpenseDateRange?.to && "text-muted-foreground"
                                 )}
                             >
-                                {date?.from && date?.to
-                                    ? `${format(date.from, "PPP")} - ${format(date.to, "PPP")}`
+                                {incomeExpenseDateRange?.from && incomeExpenseDateRange?.to
+                                    ? `${format(incomeExpenseDateRange.from, "PPP")} - ${format(incomeExpenseDateRange.to, "PPP")}`
                                     : "Pick a date range"}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-full p-0" align="start">
-                            <Calendar
-                                mode="range"
-                                selected={date}
-                                onSelect={setDate}
-                                initialFocus
-                            />
-                        </PopoverContent>
-                    </Popover>
-                </CardDescription>
-            </CardHeader>
+                    </div>
 
-            <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <LineChart
-                        accessibilityLayer
-                        data={incomeExpenses.data || []}
-                        margin={{
-                            left: 12,
-                            right: 12,
-                        }}>
-                        <CartesianGrid vertical={false}/>
-
-                        <XAxis
-                            dataKey={"date"}
-                            tickFormatter={(value: string) => format(new Date(value), "MMM d")}/>
-
-                        <ChartTooltip cursor={false} content={<ChartTooltipContent/>}/>
-                        <Line
-                            dataKey={"income"}
-                            type={"monotone"}
-                            stroke={chartConfig.income.color}
-                            strokeWidth={2}
-                            dot={false}
+                    <PopoverContent className="w-full p-0" align="start">
+                        <Calendar
+                            mode="range"
+                            selected={incomeExpenseDateRange}
+                            onSelect={setIncomeExpenseDateRange}
+                            initialFocus
                         />
-                        <Line
-                            dataKey="expenses"
-                            type="monotone"
-                            stroke={chartConfig.expenses.color}
-                            strokeWidth={2}
-                            dot={false}
-                        />
-                    </LineChart>
-                </ChartContainer>
+                    </PopoverContent>
+                </Popover>
+
+                <DataTable columns={columns} data={incomeExpenseData}/>
+
+                <Button onClick={() => exportFile.mutate()} disabled={incomeExpenseData.length == 0}>
+                    Export
+                </Button>
             </CardContent>
-        </Card>
-    );
-};
+        );
+    };
 
 export default IncomeExpenseReport;

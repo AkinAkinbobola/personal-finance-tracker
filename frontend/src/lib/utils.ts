@@ -28,8 +28,10 @@ export function getRandomColor() {
 }
 
 export const toLocalDate = (date: Date) => {
-    return format(date, "yyyy-MM-dd");
-}
+    if (!date) {
+        return null
+    }
+    return format(date, "yyyy-MM-dd");}
 
 export const downloadFile = (response: any, filename: string) => {
     const url = window.URL.createObjectURL(new Blob([response.data]));

@@ -2,10 +2,7 @@ package dev.akinbobobla.personalfinancetracker.services.Reports;
 
 import dev.akinbobobla.personalfinancetracker.dtos.IncomeExpenseDto;
 import dev.akinbobobla.personalfinancetracker.dtos.MonthlySpendingReportDto;
-import dev.akinbobobla.personalfinancetracker.dtos.ReportDto;
 import dev.akinbobobla.personalfinancetracker.enums.TransactionType;
-import dev.akinbobobla.personalfinancetracker.exceptions.ResourceNotFoundException;
-import dev.akinbobobla.personalfinancetracker.models.Category;
 import dev.akinbobobla.personalfinancetracker.models.Transaction;
 import dev.akinbobobla.personalfinancetracker.repositories.CategoryRepository;
 import dev.akinbobobla.personalfinancetracker.repositories.TransactionRepository;
@@ -17,7 +14,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,6 +49,22 @@ public class ReportsServiceImpl implements ReportsService {
 
 
     @Override
+    public String generateMonthlySpendingReportCsv (String month) {
+        List <MonthlySpendingReportDto> monthlySpendingReport = generateMonthlySpendingReport(month);
+
+        String header = "Category,Total Spent\n";
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append(header);
+
+        for (MonthlySpendingReportDto reportDto : monthlySpendingReport) {
+            csvContent.append(StringUtils.capitalize(reportDto.categoryName())).append(",");
+            csvContent.append(reportDto.totalSpent()).append("\n");
+        }
+
+        return csvContent.toString();
+    }
+
+    @Override
     public List <IncomeExpenseDto> generateIncomeExpenseReport (String startDate, String endDate) {
         LocalDate start = LocalDate.parse(startDate);
         LocalDate end = LocalDate.parse(endDate);
@@ -77,62 +92,18 @@ public class ReportsServiceImpl implements ReportsService {
     }
 
     @Override
-    public List <ReportDto> generateReport (List <String> categories, String startDate, String endDate) {
-        List <Category> categoryList;
+    public String generateIncomeExpenseReportCsv (String startDate, String endDate) {
+        List <IncomeExpenseDto> incomeExpenseDtoList = generateIncomeExpenseReport(startDate, endDate);
 
-        if (categories == null) {
-            categoryList = categoryRepository.findAll();
-        } else {
-            categoryList = categories.stream().map(s -> categoryRepository.findByName(s.toLowerCase())
-                    .orElseThrow(() -> new ResourceNotFoundException("Category not found"))).toList();
-        }
+        String header = "Date,Income,Expenses\n";
 
-        LocalDate start = LocalDate.parse(startDate);
-        LocalDate end = LocalDate.parse(endDate);
-
-        List <Transaction> transactions = transactionRepository.findByDateBetween(start, end, Sort.by(Sort.Direction.ASC, "date"));
-
-        List <Category> finalCategoryList = categoryList;
-
-        List <Transaction> filteredTransactions = transactions.stream()
-                .filter(transaction -> finalCategoryList.contains(transaction.getCategory()))
-                .toList();
-
-        return filteredTransactions.stream().map(transaction -> new ReportDto(
-                transaction.getDate(),
-                transaction.getAmount(),
-                transaction.getType().name(),
-                transaction.getCategory().getName()
-        )).toList();
-    }
-
-    @Override
-    public String generateCsvReport (List <ReportDto> reportDtoList) {
-        String header = "Date,Category,Type,Amount\n";
         StringBuilder csvContent = new StringBuilder();
         csvContent.append(header);
 
-        for (ReportDto reportDto : reportDtoList) {
+        for (IncomeExpenseDto reportDto : incomeExpenseDtoList) {
             csvContent.append(reportDto.date()).append(",");
-            csvContent.append(StringUtils.capitalize(reportDto.category())).append(",");
-            csvContent.append(reportDto.type()).append(",");
-            csvContent.append(reportDto.amount()).append("\n");
-        }
-
-        return csvContent.toString();
-    }
-
-    @Override
-    public String generateMonthlySpendingReportCsv (String month) {
-        List <MonthlySpendingReportDto> monthlySpendingReport = generateMonthlySpendingReport(month);
-
-        String header = "Category,Total Spent\n";
-        StringBuilder csvContent = new StringBuilder();
-        csvContent.append(header);
-
-        for (MonthlySpendingReportDto reportDto : monthlySpendingReport) {
-            csvContent.append(StringUtils.capitalize(reportDto.categoryName())).append(",");
-            csvContent.append(reportDto.totalSpent()).append("\n");
+            csvContent.append(reportDto.income()).append(",");
+            csvContent.append(reportDto.expenses()).append("\n");
         }
 
         return csvContent.toString();
