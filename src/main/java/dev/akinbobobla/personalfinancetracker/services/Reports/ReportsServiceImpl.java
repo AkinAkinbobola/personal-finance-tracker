@@ -10,6 +10,7 @@ import dev.akinbobobla.personalfinancetracker.models.Transaction;
 import dev.akinbobobla.personalfinancetracker.repositories.CategoryRepository;
 import dev.akinbobobla.personalfinancetracker.repositories.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -79,7 +80,7 @@ public class ReportsServiceImpl implements ReportsService {
     public List <ReportDto> generateReport (List <String> categories, String startDate, String endDate) {
         List <Category> categoryList;
 
-        if (Objects.equals(categories, List.of("all"))) {
+        if (categories == null) {
             categoryList = categoryRepository.findAll();
         } else {
             categoryList = categories.stream().map(s -> categoryRepository.findByName(s.toLowerCase())
@@ -103,5 +104,21 @@ public class ReportsServiceImpl implements ReportsService {
                 transaction.getType().name(),
                 transaction.getCategory().getName()
         )).toList();
+    }
+
+    @Override
+    public String generateCsvReport (List <ReportDto> reportDtoList) {
+        String header = "Date,Category,Type,Amount\n";
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append(header);
+
+        for (ReportDto reportDto : reportDtoList) {
+            csvContent.append(reportDto.date()).append(",");
+            csvContent.append(StringUtils.capitalize(reportDto.category())).append(",");
+            csvContent.append(reportDto.type()).append(",");
+            csvContent.append(reportDto.amount()).append("\n");
+        }
+
+        return csvContent.toString();
     }
 }

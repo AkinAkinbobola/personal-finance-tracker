@@ -1,5 +1,5 @@
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {useQuery} from "@tanstack/react-query";
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {useMutation, useQuery} from "@tanstack/react-query";
 import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {Category} from "@/types/Category.ts";
 import MultipleSelector, {Option} from "@/components/ui/multi-select.tsx";
@@ -14,6 +14,7 @@ import {DateRange} from "react-day-picker";
 import {Report} from "@/types/Report.ts";
 import {ColumnDef} from "@tanstack/react-table";
 import {DataTable} from "@/components/shared/DataTable.tsx";
+
 
 const ReportTable = () => {
     const [categoryValue, setCategoryValue] = useState<Option[]>([])
@@ -79,6 +80,25 @@ const ReportTable = () => {
         }
     })
 
+    const exportAsCsv = useMutation({
+        mutationFn: async () => {
+            if (!report.data || report.data.length === 0 || !date?.from || !date?.to) {
+                return;
+            }
+            const response = await axiosInstance.post("/reports/export", report.data, {
+                responseType: "blob"
+            })
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `Report ${toLocalDate(date.from)} to ${toLocalDate(date.to)}.csv`;
+            document.body.appendChild(link)
+            link.click();
+            document.body.removeChild(link)
+            window.URL.revokeObjectURL(url)
+        }
+    })
+
 
     return (
         <Card>
@@ -139,6 +159,12 @@ const ReportTable = () => {
                     }
                 </div>
             </CardContent>
+
+            <CardFooter>
+                <Button onClick={() => exportAsCsv.mutate()} disabled={report.data?.length === 0}>
+                    Export
+                </Button>
+            </CardFooter>
         </Card>
     );
 };

@@ -1,13 +1,15 @@
 package dev.akinbobobla.personalfinancetracker.controllers;
 
+import dev.akinbobobla.personalfinancetracker.dtos.ReportDto;
 import dev.akinbobobla.personalfinancetracker.responses.ErrorResponse;
 import dev.akinbobobla.personalfinancetracker.services.Reports.ReportsService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.YearMonth;
 import java.util.List;
@@ -43,9 +45,27 @@ public class ReportController {
     }
 
     @GetMapping
-    public ResponseEntity <?> getReport (@RequestParam(required = false, defaultValue = "all") List <String> categories, @RequestParam String startDate, @RequestParam String endDate) {
+    public ResponseEntity <?> getReport (@RequestParam(required = false) List<String> categories, @RequestParam String startDate, @RequestParam String endDate) {
         try {
             return ResponseEntity.ok(reportsService.generateReport(categories, startDate, endDate));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+
+    @PostMapping("export")
+    public ResponseEntity <?> generateCsv (@Valid @RequestBody List <ReportDto> reportDtoList) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.attachment().filename("report.csv").build());
+            headers.setContentType(MediaType.TEXT_PLAIN);
+
+            byte[] csvBytes = reportsService.generateCsvReport(reportDtoList).getBytes();
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(csvBytes);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         }
