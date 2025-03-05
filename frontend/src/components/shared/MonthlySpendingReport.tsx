@@ -47,7 +47,7 @@ const MonthlySpendingReport =
                     },
                     responseType: "blob"
                 })
-                downloadFile(response, `monthly-spending-${monthlySpendingMonth}`)
+                downloadFile(response, `Monthly-Spending Report ${monthlySpendingMonth}`)
             }
         })
 

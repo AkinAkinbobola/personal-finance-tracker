@@ -41,7 +41,7 @@ const IncomeExpenseReport =
                     responseType: "blob"
                 })
 
-                downloadFile(response, "income-expense")
+                downloadFile(response, `Income-Expense Report ${toLocalDate(incomeExpenseDateRange.from)} to ${toLocalDate(incomeExpenseDateRange.to)}`)
             }
         })
 
