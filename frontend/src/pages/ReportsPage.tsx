@@ -6,14 +6,7 @@ import {Card, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {IncomeExpense} from "@/types/IncomeExpense.ts";
 import {DateRange} from "react-day-picker";
 import IncomeExpenseReport from "@/components/shared/IncomeExpenseReport.tsx";
-import {format} from "date-fns";
-
-const formatDate = (date: Date | undefined) => {
-    if (!date) {
-        return null
-    }
-    return format(date, "yyyy-MM-dd");
-}
+import {toLocalDate} from "@/lib/utils.ts";
 
 const ReportsPage = () => {
     const [monthlySpendingMonth, setMonthlySpendingMonth] = useState<String | undefined>(undefined)
@@ -38,7 +31,7 @@ const ReportsPage = () => {
     })
 
     const incomeExpenseQuery = useQuery({
-        queryKey: ["income-expense", formatDate(incomeExpenseDateRange?.from), formatDate(incomeExpenseDateRange?.to)],
+        queryKey: ["income-expense", toLocalDate(incomeExpenseDateRange?.from), toLocalDate(incomeExpenseDateRange?.to)],
         queryFn: async () => {
             if (!incomeExpenseDateRange?.to || !incomeExpenseDateRange?.from) {
                 return [];
@@ -46,8 +39,8 @@ const ReportsPage = () => {
 
             const response = await axiosInstance.get<IncomeExpense[]>("/reports/income-expense", {
                 params: {
-                    startDate: formatDate(incomeExpenseDateRange.from),
-                    endDate: formatDate(incomeExpenseDateRange.to)
+                    startDate: toLocalDate(incomeExpenseDateRange.from),
+                    endDate: toLocalDate(incomeExpenseDateRange.to)
                 }
             });
             return response.data

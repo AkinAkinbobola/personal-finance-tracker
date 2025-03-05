@@ -27,7 +27,7 @@ export function getRandomColor() {
     return color;
 }
 
-export const toLocalDate = (date: Date) => {
+export const toLocalDate = (date: Date | undefined) => {
     if (!date) {
         return null
     }
