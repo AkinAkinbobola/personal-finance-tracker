@@ -10,9 +10,11 @@ import {useEffect, useState} from "react";
 import {ColumnDef} from "@tanstack/react-table";
 import {DataTable} from "@/components/shared/DataTable.tsx";
 import {capitalize, formatMoney} from "@/lib/utils.ts";
+import {format} from "date-fns";
 
 
 interface MonthlySpendingReportProps {
+    monthlySpendingMonth: String | undefined;
     setMonthlySpendingMonth: (month: String | undefined) => void;
     monthlySpendingData: MonthlySpending[]
 }
@@ -32,6 +34,7 @@ const years = Array.from(
 
 const MonthlySpendingReport =
     ({
+         monthlySpendingMonth,
          setMonthlySpendingMonth,
          monthlySpendingData
      }: MonthlySpendingReportProps) => {
@@ -48,7 +51,7 @@ const MonthlySpendingReport =
             },
             {
                 accessorKey: "totalSpent",
-                header: "Amount Spent",
+                header: `Amount Spent (${format(new Date(monthlySpendingMonth as string), "MMMM yyyy")})`,
                 cell: ({row}) => {
                     return <div>{formatMoney(row.getValue("totalSpent"))}</div>
                 }
@@ -95,7 +98,10 @@ const MonthlySpendingReport =
                 </div>
 
 
-                <DataTable columns={columns} data={monthlySpendingData}/>
+                <DataTable
+                    columns={columns}
+                    data={monthlySpendingData}
+                />
             </div>
         );
     };

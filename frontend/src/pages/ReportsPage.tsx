@@ -29,6 +29,7 @@ const ReportsPage = () => {
                 monthlySpendingQuery.data &&
 
                 <MonthlySpendingReport
+                    monthlySpendingMonth={monthlySpendingMonth}
                     setMonthlySpendingMonth={setMonthlySpendingMonth}
                     monthlySpendingData={monthlySpendingQuery.data}
                 />
