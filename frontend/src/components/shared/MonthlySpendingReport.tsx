@@ -8,6 +8,7 @@ import {format} from "date-fns";
 import {useMutation} from "@tanstack/react-query";
 import {axiosInstance} from "@/axios/axiosInstance.ts";
 import {Button} from "@/components/ui/button.tsx";
+import {CardContent} from "@/components/ui/card.tsx";
 
 
 interface MonthlySpendingReportProps {
@@ -73,9 +74,8 @@ const MonthlySpendingReport =
             }
         }, [selectedMonth, selectedYear]);
 
-
         return (
-            <div className={"space-y-4"}>
+            <CardContent className={"space-y-4"}>
                 <div className={"flex justify-end"}>
                     <div className={"flex items-center justify-between gap-5"}>
                         <Select onValueChange={setSelectedMonth}>
@@ -112,10 +112,10 @@ const MonthlySpendingReport =
                     data={monthlySpendingData}
                 />
 
-                <Button onClick={() => exportFile.mutate()} disabled={monthlySpendingData.length === 0}>
+                <Button onClick={() => exportFile.mutate()} disabled={monthlySpendingData.length == 0}>
                     Export
                 </Button>
-            </div>
+            </CardContent>
         );
     };
 
