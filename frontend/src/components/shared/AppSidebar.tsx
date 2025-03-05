@@ -8,17 +8,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar.tsx"
-import {BookText, ChevronUp, FolderOpen, HandCoins, Home} from "lucide-react";
+import {BookText, ChevronUp, FolderOpen, HandCoins} from "lucide-react";
 import {NavLink} from "react-router";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {Avatar, AvatarFallback} from "@/components/ui/avatar.tsx";
 
 const menuItems = [
-    {
-        title: "Dashboard",
-        icon: Home,
-        url: "/app/dashboard",
-    },
     {
         title: "Categories",
         icon: FolderOpen,

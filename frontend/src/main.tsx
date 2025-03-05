@@ -8,7 +8,6 @@ import LandingPage from "@/pages/LandingPage.tsx";
 import AboutPage from "@/pages/AboutPage.tsx";
 import ServicesPage from "@/pages/ServicesPage.tsx";
 import AppLayout from "@/layouts/AppLayout.tsx";
-import DashboardPage from "@/pages/DashboardPage.tsx";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import CategoriesPage from "@/pages/CategoriesPage.tsx";
 import BudgetDetails from "@/pages/BudgetDetails.tsx";
@@ -30,7 +29,6 @@ createRoot(document.getElementById('root')!).render(
 
                     <Route path={"/app"} element={<AppLayout/>}>
                         <Route path={"transactions"} element={<TransactionPage/>}/>
-                        <Route path={"dashboard"} element={<DashboardPage/>}/>
                         <Route path={"budgets"}>
                             <Route path={":category"} element={<BudgetDetails/>}/>
                         </Route>
