@@ -20,7 +20,7 @@ import java.util.List;
 public class ReportController {
     private final ReportsService reportsService;
 
-    @GetMapping("/spending")
+    @GetMapping("/monthly-spending")
     public ResponseEntity <?> monthlySpendingReport (@RequestParam String month) {
         try {
             try {

@@ -121,4 +121,20 @@ public class ReportsServiceImpl implements ReportsService {
 
         return csvContent.toString();
     }
+
+    @Override
+    public String generateMonthlySpendingReportCsv (String month) {
+        List <MonthlySpendingReportDto> monthlySpendingReport = generateMonthlySpendingReport(month);
+
+        String header = "Category,Total Spent\n";
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append(header);
+
+        for (MonthlySpendingReportDto reportDto : monthlySpendingReport) {
+            csvContent.append(reportDto.categoryName()).append(",");
+            csvContent.append(reportDto.totalSpent()).append("\n");
+        }
+
+        return csvContent.toString();
+    }
 }

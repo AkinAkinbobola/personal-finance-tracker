@@ -14,4 +14,6 @@ public interface ReportsService {
     List<ReportDto> generateReport (List <String> categories, String startDate, String endDate);
 
     String generateCsvReport (List <ReportDto> reportDtoList);
+
+    String generateMonthlySpendingReportCsv (String month);
 }
